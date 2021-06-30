@@ -34,6 +34,12 @@ class Reservation
      */
     private $id_user;
 
+    /**
+     * @ORM\OneToOne(targetEntity=Cinema::class, cascade={"persist", "remove"})
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $id_cinema;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -71,6 +77,18 @@ class Reservation
     public function setIdUser(?User $id_user): self
     {
         $this->id_user = $id_user;
+
+        return $this;
+    }
+
+    public function getIdCinema(): ?Cinema
+    {
+        return $this->id_cinema;
+    }
+
+    public function setIdCinema(Cinema $id_cinema): self
+    {
+        $this->id_cinema = $id_cinema;
 
         return $this;
     }

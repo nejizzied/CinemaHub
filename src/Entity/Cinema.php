@@ -59,10 +59,16 @@ class Cinema
      */
     private $publicites;
 
+    /**
+     * @ORM\ManyToMany(targetEntity=Film::class, mappedBy="id_cinema")
+     */
+    private $films;
+
     public function __construct()
     {
         $this->salleDeProjections = new ArrayCollection();
         $this->publicites = new ArrayCollection();
+        $this->films = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -197,6 +203,33 @@ class Cinema
             if ($publicite->getIdCinema() === $this) {
                 $publicite->setIdCinema(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Film[]
+     */
+    public function getFilms(): Collection
+    {
+        return $this->films;
+    }
+
+    public function addFilm(Film $film): self
+    {
+        if (!$this->films->contains($film)) {
+            $this->films[] = $film;
+            $film->addIdCinema($this);
+        }
+
+        return $this;
+    }
+
+    public function removeFilm(Film $film): self
+    {
+        if ($this->films->removeElement($film)) {
+            $film->removeIdCinema($this);
         }
 
         return $this;

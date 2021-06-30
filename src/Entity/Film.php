@@ -66,10 +66,18 @@ class Film
      */
     private $commentaires;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=Cinema::class)
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $id_cinema;
+
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
         $this->commentaires = new ArrayCollection();
+        $this->id_cinema = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -217,6 +225,37 @@ class Film
                 $commentaire->setIdFilm(null);
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Cinema[]
+     */
+    public function getIdCinema(): Collection
+    {
+        return $this->id_cinema;
+    }
+
+    public function addIdCinema(Cinema $idCinema): self
+    {
+        if (!$this->id_cinema->contains($idCinema)) {
+            $this->id_cinema[] = $idCinema;
+        }
+
+        return $this;
+    }
+
+    public function removeIdCinema(Cinema $idCinema): self
+    {
+        $this->id_cinema->removeElement($idCinema);
+
+        return $this;
+    }
+
+    public function setIdCinema(?Cinema $id_cinema): self
+    {
+        $this->id_cinema = $id_cinema;
 
         return $this;
     }

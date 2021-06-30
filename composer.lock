@@ -6965,16 +6965,16 @@
         },
         {
             "name": "symfony/web-server-bundle",
-            "version": "v4.4.25",
+            "version": "v4.4.26",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/web-server-bundle.git",
-                "reference": "2f58db9a6b2e173c13b2519d804f694d23247b8c"
+                "reference": "7aaea9666309f7d6375d2f07ef53c4777f16950c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/web-server-bundle/zipball/2f58db9a6b2e173c13b2519d804f694d23247b8c",
-                "reference": "2f58db9a6b2e173c13b2519d804f694d23247b8c",
+                "url": "https://api.github.com/repos/symfony/web-server-bundle/zipball/7aaea9666309f7d6375d2f07ef53c4777f16950c",
+                "reference": "7aaea9666309f7d6375d2f07ef53c4777f16950c",
                 "shasum": ""
             },
             "require": {
@@ -7016,7 +7016,7 @@
             "description": "Provides commands for running applications using the PHP built-in web server",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/web-server-bundle/tree/v4.4.25"
+                "source": "https://github.com/symfony/web-server-bundle/tree/v4.4.26"
             },
             "funding": [
                 {
@@ -7032,7 +7032,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2021-05-26T17:39:37+00:00"
+            "time": "2021-06-08T05:59:26+00:00"
         },
         {
             "name": "symfony/yaml",
