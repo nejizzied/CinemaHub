@@ -3,8 +3,11 @@
 namespace App\Controller;
 
 use App\Entity\Reservation;
+use App\Entity\User;
 use App\Form\ReservationType;
 use App\Repository\ReservationRepository;
+use Doctrine\ORM\Mapping\Id;
+use Proxies\__CG__\App\Entity\User as EntityUser;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -33,9 +36,10 @@ class ReservationController extends AbstractController
         $reservation = new Reservation();
         $form = $this->createForm(ReservationType::class, $reservation);
         $form->handleRequest($request);
-
+        
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager = $this->getDoctrine()->getManager();
+           # $reservation->setIdUser(1); 
             $entityManager->persist($reservation);
             $entityManager->flush();
 
