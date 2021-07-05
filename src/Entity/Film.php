@@ -137,12 +137,12 @@ class Film
         return $this;
     }
 
-    public function getIdCategorie(): ?int
+    public function getIdCategorie(): ?Categorie
     {
         return $this->id_categorie;
     }
 
-    public function setIdCategorie(int $id_categorie): self
+    public function setIdCategorie(Categorie $id_categorie): self
     {
         $this->id_categorie = $id_categorie;
 

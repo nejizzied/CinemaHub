@@ -39,7 +39,7 @@ class SalleDeProjection
     private $id_cinema;
 
     /**
-     * @ORM\OneToOne(targetEntity=Film::class, cascade={"persist", "remove"})
+     * @ORM\OneToOne(targetEntity=Film::class, cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $id_film;

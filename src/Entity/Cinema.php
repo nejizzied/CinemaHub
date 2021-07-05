@@ -59,6 +59,16 @@ class Cinema
      */
     private $publicites;
 
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $Latitude;
+
+    /**
+     * @ORM\Column(type="string", length=50, nullable=true)
+     */
+    private $Longitude;
+
     public function __construct()
     {
         $this->salleDeProjections = new ArrayCollection();
@@ -201,4 +211,30 @@ class Cinema
 
         return $this;
     }
+
+    public function getLatitude(): ?string
+    {
+        return $this->Latitude;
+    }
+
+    public function setLatitude(?string $Latitude): self
+    {
+        $this->Latitude = $Latitude;
+
+        return $this;
+    }
+
+    public function getLongitude(): ?string
+    {
+        return $this->Longitude;
+    }
+
+    public function setLongitude(?string $Longitude): self
+    {
+        $this->Longitude = $Longitude;
+
+        return $this;
+    }
+
+
 }
