@@ -21,31 +21,37 @@ class Cinema
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("write" , "read")
      */
     private $nom_cinema;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("write" , "read")
      */
     private $adresse;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("write" , "read")
      */
     private $num_tel;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("write" , "read")
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("write" , "read")
      */
     private $password;
 

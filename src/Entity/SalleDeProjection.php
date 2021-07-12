@@ -13,41 +13,46 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=SalleDeProjectionRepository::class)
  */
 
- 
-#[ApiResource]
+
 class SalleDeProjection
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("write" , "read")
      */
     private $nbr_places;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("write" , "read")
      */
     private $image;
 
     /**
      * @ORM\Column(type="boolean")
+     * @Groups("write" , "read")
      */
     private $status;
 
     /**
      * @ORM\ManyToOne(targetEntity=Cinema::class, inversedBy="salleDeProjections")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("write" , "read")
      */
     private $id_cinema;
 
     /**
      * @ORM\OneToOne(targetEntity=Film::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("write" , "read")
      */
     private $id_film;
 

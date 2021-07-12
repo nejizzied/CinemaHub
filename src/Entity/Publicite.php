@@ -13,13 +13,13 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=PubliciteRepository::class)
  */
 
-#[ApiResource]
 class Publicite
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("write" , "read")
      */
     private $id;
 
