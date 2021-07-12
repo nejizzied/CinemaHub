@@ -20,37 +20,44 @@ class Film
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups( "read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("write" , "read")
      */
     private $nom_film;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups("write" , "read")
      */
     private $show_time;
 
     /**
      * @ORM\Column(type="time")
+     * @Groups("write" , "read")
      */
     private $duree;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups("write" , "read")
      */
     private $prix;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("write" , "read")
      */
     private $audience;
 
     /**
      * @ORM\ManyToOne(targetEntity=Categorie::class, inversedBy="films")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("write" , "read")
      */
     private $id_categorie;
 
@@ -62,6 +69,7 @@ class Film
     /**
      * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="films")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups("write" , "read")
      */
     private $id_admin;
 
