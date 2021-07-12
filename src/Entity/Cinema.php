@@ -142,6 +142,11 @@ class Cinema
         return $this;
     }
 
+    public function __toString()
+    {
+        return(String) $this->getNomCinema();
+    }
+
     /**
      * @return Collection|SalleDeProjection[]
      */

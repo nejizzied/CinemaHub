@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+<table border=2>
+<tr> 
+<td> Prix de la pub </td>
+<td> Date de début </td>
+<td> Date d'expiration </td>
+    <td> Etat </td>
+<td> Action </td>
+</tr>
+
+<tr>
+{% for l in list %}
+<td> {{l.prix}} </td>
+<td> {{l.date | date('d/m/Y')}} </td>
+<td> {{l.datefin | date('d/m/Y')}} </td>
+    <td> {{l.etat}} </td>
+   {% if l.etat == 'confirmed' %} <td> <a href="{{path('ModifierPub',{'id':l.id})}}"> Prolonger </a> </td>
+    {% endif %}
+</tr>
+{% endfor %}
+
+</table>
+
+<button><a href="{{ path('pub') }}">retour</a></button>
+
+<button><a href="{{ path('AjoutPub') }}">Demandé une pub</a></button>
+
+{% endblock %}

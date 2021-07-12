@@ -1,0 +1,39 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+<table border=2>
+<tr> 
+<td> Prix de la pub </td>
+<td> Date de début </td>
+<td> Date d'expiration </td>
+    <td> Demandé par </td>
+    <td> Répondu par </td>
+    <td> Etat </td>
+<td> Action </td>
+</tr>
+
+<tr>
+{% for l in list %}
+<td> {{l.prix}} </td>
+<td> {{l.date | date('d/m/Y')}} </td>
+<td> {{l.datefin | date('d/m/Y')}} </td>
+    <td> {{l.idCinema}} </td>
+    <td> {{l.idAdmin}} </td>
+    <td> {{l.etat}} </td>
+    <td>
+        <!-- itha en el etat mte3ou tbadel confirmer enna7eha -->
+   {% if l.etat == '' or l.etat == 'Demande de Prolongation' or l.etat == 'Demande en cours de traitement' %}  <a href="{{path('ConfirmerPub',{'id':l.id})}}"> Confirmer</a>
+     <a href="{{path('AnnulerPub',{'id':l.id})}}"> Refuser</a>
+    {% endif %}
+     <a href="{{path('DELPub',{'id':l.id})}}"> Supprimer</a>
+    </td>
+</tr>
+{% endfor %}
+
+</table>
+
+
+<button><a href="{{ path('pub') }}">retour</a></button>
+
+{% endblock %}

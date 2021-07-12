@@ -1,0 +1,124 @@
+{% extends 'base.html.twig' %}
+
+
+   {% block stylesheets %}
+       <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+       <link rel="stylesheet" href="{{ asset('css/bootstrap-datepicker.min.css') }}">
+   {% endblock %}
+
+  {% block javascripts %}
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js" > </script>
+
+      <script src="{{ asset('js/bootstrap-datepicker.min.js') }}" > </script>
+      
+  {% endblock %}
+
+ {% block body %}
+
+     {{ form_start(f) }}
+     {{ form_errors(f) }}
+
+     <div id="dateRange">
+
+         <div class="input-daterange input-group" id="datepicker">
+             {{ form_row(f.date) }}
+             {{ form_row(f.datefin) }}
+         </div>
+
+     </div>
+     {{ form_rest(f) }}
+     {{ form_end(f) }}
+
+     <button><a href="{{ path('pub') }}">retour</a></button>
+     <style>
+    .jcc {
+        color: green;
+        background-color: #AAAAAA;
+    }
+</style>
+
+<script>
+
+    $(document).ready(function() {
+
+        var d = new Date();
+
+        var month = d.getMonth()+1;
+        var day = d.getDate();
+
+        var output = d.getFullYear() + '-' +
+            (month<10 ? '0' : '') + month + '-' +
+            (day<10 ? '0' : '') + day;
+
+        console.log(output);
+
+        var onlyThisDates = [{% for i  in invalidDates %} '{{ i }}' , {% endfor %} '2021-01-01'];
+
+        $('#dateRange .input-daterange').datepicker({
+            keyboardNavigation: false,
+            format: 'yyyy-mm-dd',
+            forceParse: false,
+            startDate: output,
+            todayHighlight: true,
+            beforeShowDay: function (date) {
+                var dt_ddmmyyyy = date.getFullYear() + '-' +  ( ( date.getMonth() + 1 ) <10 ? '0' : '') + (date.getMonth() + 1) + '-' +  (date.getDate()<10 ? '0' : '') + date.getDate()
+
+                if (onlyThisDates.indexOf(dt_ddmmyyyy) != -1) {
+                    if (  date >= new Date('07/01/2021') && date <= new Date('07/07/2021'))
+                    {
+                        return {
+                            tooltip: 'Journée JCC',
+                            classes: 'jcc'
+                        };
+                    }
+
+                   return true ;
+
+                } else {
+                    return false;
+                }
+            }
+        });
+
+        // Script mta3 el 7ésba ta3 el prix
+        $('#datepicker').change(e => {
+
+            var start = $('#publ_date').val();
+            var end = $('#publ_datefin').val();
+
+            // end - start returns difference in milliseconds
+            var diff = new Date(Date.parse(end) - Date.parse(start));
+            // get days
+            var days = diff/1000/60/60/24;
+
+            // dakhalna el 7ésba mta3 el JCC
+            var additionalPrix = 0 ;
+            var jccDates = [ {% for i  in jccDate %} '{{ i }}' , {% endfor %}]; // ['12-01-2021' , ... ]
+            jccDates.forEach(
+                e => { // el e héya el compteur ( how el i fil boucle for )
+                    if(  Date.parse(start) <= Date.parse(e) && Date.parse(e) <= Date.parse(end)  )
+                    {
+                        console.log(e);
+                        additionalPrix += 50 ;
+                    }
+                }
+            )
+
+            console.log(additionalPrix);
+
+            $('#publ_prix').val( ( ( days + 1 ) * 50  ) + additionalPrix);
+        });
+
+        $('#publ_prix').prop('disabled', true);
+    });
+
+
+
+</script>
+
+
+ {% endblock %}
+

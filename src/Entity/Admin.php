@@ -44,6 +44,11 @@ class Admin
      */
     private $commentaires;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $nom;
+
     public function __construct()
     {
         $this->publicites = new ArrayCollection();
@@ -51,6 +56,7 @@ class Admin
         $this->commentaires = new ArrayCollection();
     }
 
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -78,6 +84,11 @@ class Admin
         $this->password = $password;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return(String) $this->getNom();
     }
 
     /**
@@ -166,6 +177,18 @@ class Admin
                 $commentaire->setIdAdmin(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(string $nom): self
+    {
+        $this->nom = $nom;
 
         return $this;
     }

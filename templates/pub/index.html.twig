@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block body %}
+
+
+    {{ dump(pub) }}
+
+<button><a href="{{ path('affichagePubCinema') }}">Demandé en tant que Cinema</a></button>
+
+<button><a href="{{ path('affichagePub') }}">Approuver un pub en tantque Admin</a></button>
+{% endblock %}

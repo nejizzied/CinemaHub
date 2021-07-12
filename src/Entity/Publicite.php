@@ -4,10 +4,13 @@ namespace App\Entity;
 
 use App\Repository\PubliciteRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
 
 /**
  * @ORM\Entity(repositoryClass=PubliciteRepository::class)
  */
+
+#[ApiResource]
 class Publicite
 {
     /**
@@ -33,11 +36,22 @@ class Publicite
      */
     private $id_cinema;
 
+
     /**
      * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="publicites")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
      */
     private $id_admin;
+
+    /**
+     * @ORM\Column(type="date")
+     */
+    private $datefin;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $etat;
 
     public function getId(): ?int
     {
@@ -88,6 +102,30 @@ class Publicite
     public function setIdAdmin(?Admin $id_admin): self
     {
         $this->id_admin = $id_admin;
+
+        return $this;
+    }
+
+    public function getDateFin(): ?\DateTimeInterface
+    {
+        return $this->datefin;
+    }
+
+    public function setDateFin(\DateTimeInterface $date): self
+    {
+        $this->datefin = $date;
+
+        return $this;
+    }
+
+    public function getEtat(): ?string
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(?string $etat): self
+    {
+        $this->etat = $etat;
 
         return $this;
     }
