@@ -4,10 +4,19 @@ namespace App\Entity;
 
 use App\Repository\ReservationRepository;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @ApiResource( normalizationContext={"groups"={"read"}}  ,
+ *  denormalizationContext={"groups"={"write"}} , formats={"json"}
+ * )
+ * 
  * @ORM\Entity(repositoryClass=ReservationRepository::class)
+ * 
+ * 
  */
+
 class Reservation
 {
     /**

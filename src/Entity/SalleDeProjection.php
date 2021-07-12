@@ -3,11 +3,18 @@
 namespace App\Entity;
 
 use App\Repository\SalleDeProjectionRepository;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping as ORM;use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @ApiResource( normalizationContext={"groups"={"read"}}  ,
+ *  denormalizationContext={"groups"={"write"}} , formats={"json"}
+ * )
  * @ORM\Entity(repositoryClass=SalleDeProjectionRepository::class)
  */
+
+ 
+#[ApiResource]
 class SalleDeProjection
 {
     /**

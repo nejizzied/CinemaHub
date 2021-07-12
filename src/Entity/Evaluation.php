@@ -3,9 +3,13 @@
 namespace App\Entity;
 
 use App\Repository\EvaluationRepository;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping as ORM;use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ * @ApiResource( normalizationContext={"groups"={"read"}}  ,
+ *  denormalizationContext={"groups"={"write"}} , formats={"json"}
+ * )
  * @ORM\Entity(repositoryClass=EvaluationRepository::class)
  */
 class Evaluation
