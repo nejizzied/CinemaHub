@@ -23,46 +23,55 @@ class User
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups ({"read" , "write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *  @Groups ({"read" , "write"})
      */
     private $nom;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *  @Groups ({"read" , "write"})
      */
     private $prenom;
 
     /**
      * @ORM\Column(type="date")
+     *  @Groups ({"read" , "write"})
      */
     private $dateDeNes;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *  @Groups ({"read" , "write"})
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *  @Groups ({"read" , "write"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *  @Groups ({"read" , "write"})
      */
     private $photoDeProfile;
 
     /**
      * @ORM\Column(type="string", length=255)
+     *  @Groups ({"read" , "write"})
      */
     private $role;
 
     /**
      * @ORM\Column(type="integer", nullable=true)
+     *  @Groups ({"read" })
      */
     private $pointFidelite;
 
