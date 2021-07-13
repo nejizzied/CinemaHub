@@ -59,6 +59,7 @@ class Cinema
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"write" , "read"})
      */
     private $image;
 
