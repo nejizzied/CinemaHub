@@ -10,10 +10,12 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ *
+ * @ORM\Entity(repositoryClass=AdminRepository::class)
+ *
  * @ApiResource( normalizationContext={"groups"={"read"}}  ,
  *  denormalizationContext={"groups"={"write"}} , formats={"json"}
  * )
- * @ORM\Entity(repositoryClass=AdminRepository::class)
  */
 class Admin
 {
@@ -21,32 +23,34 @@ class Admin
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     *
+     * @Groups ({"read" , "write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups ({"read" , "write"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups ({"read" , "write"})
      */
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity=Publicite::class, mappedBy="id_admin")
+     * @ORM\OneToMany(targetEntity=Publicite::class, mappedBy="idAdmin")
      */
     private $publicites;
 
     /**
-     * @ORM\OneToMany(targetEntity=Film::class, mappedBy="id_admin")
+     * @ORM\OneToMany(targetEntity=Film::class, mappedBy="idAdmin")
      */
     private $films;
 
     /**
-     * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="id_admin")
+     * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="idAdmin")
      */
     private $commentaires;
 

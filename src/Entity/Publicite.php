@@ -7,10 +7,12 @@ use Doctrine\ORM\Mapping as ORM;use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ *
+ * @ORM\Entity(repositoryClass=PubliciteRepository::class)
+ *
  * @ApiResource( normalizationContext={"groups"={"read"}}  ,
  *  denormalizationContext={"groups"={"write"}} , formats={"json"}
  * )
- * @ORM\Entity(repositoryClass=PubliciteRepository::class)
  */
 
 class Publicite
@@ -19,7 +21,7 @@ class Publicite
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups("write" , "read")
+     * @Groups({"write" , "read"})
      */
     private $id;
 
@@ -37,14 +39,14 @@ class Publicite
      * @ORM\ManyToOne(targetEntity=Cinema::class, inversedBy="publicites")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $id_cinema;
+    private $idCinema;
 
 
     /**
      * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="publicites")
      * @ORM\JoinColumn(nullable=true)
      */
-    private $id_admin;
+    private $idAdmin;
 
     /**
      * @ORM\Column(type="date")
@@ -87,24 +89,24 @@ class Publicite
 
     public function getIdCinema(): ?Cinema
     {
-        return $this->id_cinema;
+        return $this->idCinema;
     }
 
-    public function setIdCinema(?Cinema $id_cinema): self
+    public function setIdCinema(?Cinema $idCinema): self
     {
-        $this->id_cinema = $id_cinema;
+        $this->idCinema = $idCinema;
 
         return $this;
     }
 
     public function getIdAdmin(): ?Admin
     {
-        return $this->id_admin;
+        return $this->idAdmin;
     }
 
-    public function setIdAdmin(?Admin $id_admin): self
+    public function setIdAdmin(?Admin $idAdmin): self
     {
-        $this->id_admin = $id_admin;
+        $this->idAdmin = $idAdmin;
 
         return $this;
     }

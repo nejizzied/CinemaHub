@@ -10,10 +10,12 @@ use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ *
+ * @ORM\Entity(repositoryClass=CinemaRepository::class)
+ *
  * @ApiResource( normalizationContext={"groups"={"read"}}  ,
  *  denormalizationContext={"groups"={"write"}} , formats={"json"}
  * )
- * @ORM\Entity(repositoryClass=CinemaRepository::class)
  */
 class Cinema
 {
@@ -27,31 +29,31 @@ class Cinema
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("write" , "read")
+     * @Groups({"write" , "read"})
      */
-    private $nom_cinema;
+    private $nomCinema;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("write" , "read")
+     * @Groups({"write" , "read"})
      */
     private $adresse;
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups("write" , "read")
+     * @Groups({"write" , "read"})
      */
-    private $num_tel;
+    private $numTel;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("write" , "read")
+     * @Groups({"write" , "read"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("write" , "read")
+     * @Groups({"write" , "read"})
      */
     private $password;
 
@@ -61,12 +63,12 @@ class Cinema
     private $image;
 
     /**
-     * @ORM\OneToMany(targetEntity=SalleDeProjection::class, mappedBy="id_cinema")
+     * @ORM\OneToMany(targetEntity=SalleDeProjection::class, mappedBy="idCinema")
      */
     private $salleDeProjections;
 
     /**
-     * @ORM\OneToMany(targetEntity=Publicite::class, mappedBy="id_cinema")
+     * @ORM\OneToMany(targetEntity=Publicite::class, mappedBy="idCinema")
      */
     private $publicites;
 
@@ -83,12 +85,12 @@ class Cinema
 
     public function getNomCinema(): ?string
     {
-        return $this->nom_cinema;
+        return $this->nomCinema;
     }
 
-    public function setNomCinema(string $nom_cinema): self
+    public function setNomCinema(string $nomCinema): self
     {
-        $this->nom_cinema = $nom_cinema;
+        $this->nomCinema = $nomCinema;
 
         return $this;
     }
@@ -107,12 +109,12 @@ class Cinema
 
     public function getNumTel(): ?int
     {
-        return $this->num_tel;
+        return $this->numTel;
     }
 
-    public function setNumTel(int $num_tel): self
+    public function setNumTel(int $numTel): self
     {
-        $this->num_tel = $num_tel;
+        $this->numTel = $numTel;
 
         return $this;
     }

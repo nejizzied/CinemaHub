@@ -7,10 +7,12 @@ use Doctrine\ORM\Mapping as ORM;use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ *
+ * @ORM\Entity(repositoryClass=CommentaireRepository::class)
+ *
  * @ApiResource( normalizationContext={"groups"={"read"}}  ,
  *  denormalizationContext={"groups"={"write"}} , formats={"json"}
  * )
- * @ORM\Entity(repositoryClass=CommentaireRepository::class)
  */
 class Commentaire
 {
@@ -30,19 +32,19 @@ class Commentaire
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="commentaires")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $id_user;
+    private $idUser;
 
     /**
      * @ORM\ManyToOne(targetEntity=Film::class, inversedBy="commentaires")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $id_film;
+    private $idFilm;
 
     /**
      * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="commentaires")
      * @ORM\JoinColumn(nullable=false)
      */
-    private $id_admin;
+    private $idAdmin;
 
     public function getId(): ?int
     {
@@ -63,36 +65,36 @@ class Commentaire
 
     public function getIdUser(): ?User
     {
-        return $this->id_user;
+        return $this->idUser;
     }
 
-    public function setIdUser(?User $id_user): self
+    public function setIdUser(?User $idUser): self
     {
-        $this->id_user = $id_user;
+        $this->idUser = $idUser;
 
         return $this;
     }
 
     public function getIdFilm(): ?Film
     {
-        return $this->id_film;
+        return $this->idFilm;
     }
 
-    public function setIdFilm(?Film $id_film): self
+    public function setIdFilm(?Film $idFilm): self
     {
-        $this->id_film = $id_film;
+        $this->idFilm = $idFilm;
 
         return $this;
     }
 
     public function getIdAdmin(): ?Admin
     {
-        return $this->id_admin;
+        return $this->idAdmin;
     }
 
-    public function setIdAdmin(?Admin $id_admin): self
+    public function setIdAdmin(?Admin $idAdmin): self
     {
-        $this->id_admin = $id_admin;
+        $this->idAdmin = $idAdmin;
 
         return $this;
     }

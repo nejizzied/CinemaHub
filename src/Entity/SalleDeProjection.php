@@ -7,10 +7,12 @@ use Doctrine\ORM\Mapping as ORM;use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @ApiResource( normalizationContext={"groups"={"read"}}  ,
+ *
+ * @ORM\Entity(repositoryClass=SalleDeProjectionRepository::class)
+ *
+ * @ApiResource(normalizationContext={"groups"={"read"}}  ,
  *  denormalizationContext={"groups"={"write"}} , formats={"json"}
  * )
- * @ORM\Entity(repositoryClass=SalleDeProjectionRepository::class)
  */
 
 
@@ -26,35 +28,35 @@ class SalleDeProjection
 
     /**
      * @ORM\Column(type="integer")
-     * @Groups("write" , "read")
+     * @Groups({"write" , "read"})
      */
-    private $nbr_places;
+    private $nbrPlaces;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups("write" , "read")
+     * @Groups({"write" , "read"})
      */
     private $image;
 
     /**
      * @ORM\Column(type="boolean")
-     * @Groups("write" , "read")
+     * @Groups({"write" , "read"})
      */
     private $status;
 
     /**
      * @ORM\ManyToOne(targetEntity=Cinema::class, inversedBy="salleDeProjections")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups("write" , "read")
+     * @Groups({"write" , "read"})
      */
-    private $id_cinema;
+    private $idCinema;
 
     /**
      * @ORM\OneToOne(targetEntity=Film::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
-     * @Groups("write" , "read")
+     * @Groups({"write" , "read"})
      */
-    private $id_film;
+    private $idFilm;
 
     public function getId(): ?int
     {
@@ -63,12 +65,12 @@ class SalleDeProjection
 
     public function getNbrPlaces(): ?int
     {
-        return $this->nbr_places;
+        return $this->nbrPlaces;
     }
 
-    public function setNbrPlaces(int $nbr_places): self
+    public function setNbrPlaces(int $nbrPlaces): self
     {
-        $this->nbr_places = $nbr_places;
+        $this->nbrPlaces = $nbrPlaces;
 
         return $this;
     }
@@ -99,24 +101,24 @@ class SalleDeProjection
 
     public function getIdCinema(): ?Cinema
     {
-        return $this->id_cinema;
+        return $this->idCinema;
     }
 
-    public function setIdCinema(?Cinema $id_cinema): self
+    public function setIdCinema(?Cinema $idCinema): self
     {
-        $this->id_cinema = $id_cinema;
+        $this->idCinema = $idCinema;
 
         return $this;
     }
 
     public function getIdFilm(): ?Film
     {
-        return $this->id_film;
+        return $this->idFilm;
     }
 
-    public function setIdFilm(Film $id_film): self
+    public function setIdFilm(Film $idFilm): self
     {
-        $this->id_film = $id_film;
+        $this->idFilm = $idFilm;
 
         return $this;
     }

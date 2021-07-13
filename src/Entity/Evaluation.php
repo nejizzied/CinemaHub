@@ -7,10 +7,12 @@ use Doctrine\ORM\Mapping as ORM;use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ *
+ * @ORM\Entity(repositoryClass=EvaluationRepository::class)
+ *
  * @ApiResource( normalizationContext={"groups"={"read"}}  ,
  *  denormalizationContext={"groups"={"write"}} , formats={"json"}
  * )
- * @ORM\Entity(repositoryClass=EvaluationRepository::class)
  */
 class Evaluation
 {
