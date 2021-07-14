@@ -28,12 +28,7 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *                               "multipart" = {"multipart/form-data"},
  *                                              },
  *                                  },
- *                          "put" = {
- *                          "input_formats" = {
- *                               "multipart" = {"multipart/form-data"},
- *                                          },
- *                                  }
- *                          },
+ *                        }
  *
  * )
  *
