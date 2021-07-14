@@ -19,7 +19,15 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  * @ORM\Entity(repositoryClass=UserRepository::class)
  * @Vich\Uploadable
  * @ApiResource( normalizationContext={"groups"={"read"}}  ,
- *  denormalizationContext={"groups"={"write"}} , formats={"json"}
+ *  denormalizationContext={"groups"={"write"}} , formats={"json"} ,
+ *     collectionOperations= {
+ *                          "get",
+ *                          "post" = {
+ *                          "input_formats" = {
+ *                               "multipart" = {"multipart/form-data"},
+ *                          },
+ *                          },
+ *                          },
  * )
  */
 
@@ -69,13 +77,14 @@ class User
 
     /**
      * @ORM\Column(type="string", length=9999)
-     *  @Groups ({"read" , "write"})
+     *  @Groups ({"read" })
      */
     private $photoDeProfile;
 
     /**
      * @Vich\UploadableField(mapping="photo_de_profile", fileNameProperty="photoDeProfile")
      * @var File
+     *  @Groups ({"write"})
      */
     private $imageFile;
 
@@ -194,8 +203,7 @@ class User
         if ($image) {
             // if 'updatedAt' is not defined in your entity, use another property
             $this->pointFidelite = 5;
-            dump($image);
-            exit();
+
         }
     }
 
