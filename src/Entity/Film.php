@@ -81,7 +81,7 @@ class Film
     private $audience;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255 , nullable=true)
      * @Groups({"write" , "read"})
      */
     private $image;
@@ -194,7 +194,7 @@ class Film
         return $this->image;
     }
 
-    public function setImage(string $image): self
+    public function setImage(?string $image): self
     {
         $this->image = $image;
 

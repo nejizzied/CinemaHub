@@ -33,7 +33,7 @@ class SalleDeProjection
     private $nbrPlaces;
 
     /**
-     * @ORM\Column(type="string", length=255 , nullable=true)
+     * @ORM\Column(type="string", length=255 , nullable=true , options={"default" = "default.png"})
      * @Groups({"read"})
      */
     private $image;
@@ -56,6 +56,7 @@ class SalleDeProjection
      * @ORM\JoinColumn(nullable=false)
      * @Groups({"write" , "read"})
      */
+
     private $idFilm;
 
     public function getId(): ?int
@@ -80,7 +81,7 @@ class SalleDeProjection
         return $this->image;
     }
 
-    public function setImage(string $image): self
+    public function setImage(?string $image): self
     {
         $this->image = $image;
 
