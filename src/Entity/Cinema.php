@@ -52,7 +52,7 @@ class Cinema
     private $adresse;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      * @Groups({"write" , "read"})
      */
     private $numTel;
