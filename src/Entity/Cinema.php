@@ -7,15 +7,26 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  *
  * @ORM\Entity(repositoryClass=CinemaRepository::class)
  *
+ * @Vich\Uploadable
  * @ApiResource( normalizationContext={"groups"={"read"}}  ,
- *  denormalizationContext={"groups"={"write"}} , formats={"json"}
+ *  denormalizationContext={"groups"={"write"}} , formats={"json"} ,
+ *        collectionOperations= {
+ *                          "get",
+ *                          "post" = {
+ *                          "input_formats" = {
+ *                               "multipart" = {"multipart/form-data"},
+ *                          },
+ *                          },
+ *                          },
  * )
  */
 class Cinema
@@ -60,10 +71,19 @@ class Cinema
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=9999)
+     * @ORM\Column(type="string", length=255)
      * @Groups({"write" , "read"})
      */
     private $image;
+
+    /**
+     * @Vich\UploadableField(mapping="photo_de_cinema", fileNameProperty="image")
+     * @var File
+     *  @Groups ({"write"})
+     */
+    private $imageFile;
+
+
 
     /**
      * @ORM\OneToMany(targetEntity=SalleDeProjection::class, mappedBy="idCinema")
@@ -156,6 +176,25 @@ class Cinema
         $this->image = $image;
 
         return $this;
+    }
+
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+
+        // VERY IMPORTANT:
+        // It is required that at least one field changes if you are using Doctrine,
+        // otherwise the event listeners won't be called and the file is lost
+        if ($image) {
+            // if 'updatedAt' is not defined in your entity, use another property
+            $this->email = $this->getEmail();
+
+        }
+    }
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
     }
 
     public function __toString()
