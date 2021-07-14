@@ -57,12 +57,13 @@ class Film
     #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     private $showTime;
 
+
     /**
      * @ORM\Column(type="time")
      * @Groups({"write" , "read"})
      *
      */
-    #[Context([DateTimeNormalizer::FORMAT_KEY => 'H:i:s'])]
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'H:i'])]
     private $duree;
 
     /**
