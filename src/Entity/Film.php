@@ -5,16 +5,19 @@ namespace App\Entity;
 use App\Repository\FilmRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
-use Doctrine\ORM\Mapping as ORM;use ApiPlatform\Core\Annotation\ApiResource;
+use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Context;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
  *
  * @ORM\Entity(repositoryClass=FilmRepository::class)
  * @Vich\Uploadable
- * @ApiResource( normalizationContext={"groups"={"read"}}  ,
+ * @ApiResource( normalizationContext={"groups"={"read"} }  ,
  *  denormalizationContext={"groups"={"write"}} , formats={"json"} ,
  *       collectionOperations= {
  *                          "get",
@@ -49,17 +52,21 @@ class Film
      * @ORM\Column(type="datetime")
      * @Groups({"write" , "read"})
      */
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     private $showTime;
 
     /**
      * @ORM\Column(type="time")
      * @Groups({"write" , "read"})
+     *
      */
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'H:i:s'])]
     private $duree;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
      * @Groups({"write" , "read"})
+     *
      */
     private $prix;
 
@@ -158,9 +165,9 @@ class Film
         return $this->prix;
     }
 
-    public function setPrix(int $prix): self
+    public function setPrix($prix): self
     {
-        $this->prix = $prix;
+        $this->prix = (int)$prix;
 
         return $this;
     }
