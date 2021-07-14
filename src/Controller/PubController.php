@@ -115,26 +115,27 @@ class PubController extends AbstractController
             $mailer->send($message);
 */
 
-            return $this->redirectToRoute('affichagePubCinema');
+            return new Response("Publicité ajouté");
 
         }
-        return $this->render('pub/add.html.twig', [
-            'f' => $form ->createView(), // formulaire
-            'invalidDates' => $dateDisabledArray , // naba3thou fil les date ta3 el calendrier
-            'jccDate' => $dateJcc // b3ath el tablo jcc lil view
-        ]);
+
+        $jsonContent = $Normalizer->normalize([ 'dateDisableArray' => $dateDisabledArray , 'dateJcc' =>$dateJcc ]  , 'json',['groups' => 'read' , 'enable_max_depth' => true]);
+        $retour=json_encode($jsonContent);
+        return new Response($retour);
+
     }
 
 /**
      * @Route("/affichagePub", name="affichagePub")
      */
-    public function affichage(PubliciteRepository $rep): Response
+    public function affichage(PubliciteRepository $rep , NormalizerInterface $Normalizer ): Response
     {
        $list=$rep->findAll();
 
-        return $this->render('pub/aff.html.twig', [
-            'list' =>$list
-        ]);
+        $jsonContent = $Normalizer->normalize($list ,'json',['groups' => 'read' , 'enable_max_depth' => true]);
+        $retour=json_encode($jsonContent);
+        return new Response($retour);
+
     }
 
 
@@ -143,11 +144,12 @@ class PubController extends AbstractController
      */
     public function ModifierPub (PubliciteRepository $rep,$id,Request $request , EntityManagerInterface $em
     ,  \Swift_Mailer $mailer
+    ,  NormalizerInterface $Normalizer
     ): Response //Request de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
     {
 
         $pubs = $rep->getPubsByEtat("confirmed");
-        $dateStart = $rep->getLastConfirmedPub() != null && $rep->getLastConfirmedPub()->getDateFin() >= new \DateTime() ? $publiciteRepository->getLastConfirmedPub()->getDateFin() : new \DateTime();
+        $dateStart = $rep->getLastConfirmedPub() != null && $rep->getLastConfirmedPub()->getDateFin() >= new \DateTime() ? $rep->getLastConfirmedPub()->getDateFin() : new \DateTime();
         $dateStart->modify("1 day");
 
 
@@ -157,8 +159,6 @@ class PubController extends AbstractController
         $dateEnd = $rep->getFirstConfirmedPendingPub() != null ? $rep->getFirstConfirmedPendingPub()->getDate() : $maxDate ;
         $dateEnd->modify("-1 day");
 
-        dump($dateStart);
-        dump($dateEnd);
 
         $dateDisabledArray = $this->createDateRangeArray( $dateStart->format('Y-m-d') ,$dateEnd->format('Y-m-d'));
 
@@ -182,19 +182,21 @@ class PubController extends AbstractController
             $message = (new \Swift_Message('Demande de Prolongation de pub'))
                 ->setFrom('serviceclient619@gmail.com')
                 ->setTo('serviceclient619@gmail.com')
-                ->setBody('Le Cinéma '.$pub->getIdCinema()->getNomCinema().'a demandé une prologation une pub à la date merci de répondre a cette demande rapidement !')
+                ->setBody('Le Cinéma '.$dp->getIdCinema()->getNomCinema().'a demandé une prologation une pub à la date merci de répondre a cette demande rapidement !')
             ;
 
             $mailer->send($message);
 
 
-            return $this->redirectToRoute('affichagePubCinema');
+
+            return new Response("publicité modifié");
+
         }
-        $list=$rep->findAll();
-        return $this->render('pub/UpdatePub.html.twig', [
-            'f' => $form->createView(), 'invalidDates' => $dateDisabledArray ,
-            'jccDate' => $dateJcc
-        ]);
+
+        $jsonContent = $Normalizer->normalize(['invalidDates' => $dateDisabledArray ,
+            'jccDate' => $dateJcc ],'json',['groups' => 'read' , 'enable_max_depth' => true]);
+        $retour=json_encode($jsonContent);
+        return new Response($retour);
     }
 
 
@@ -209,12 +211,8 @@ class PubController extends AbstractController
         $em=$this->getDoctrine()->getManager();
         $em->remove($Publicite);
         $em ->flush();
-            return $this->redirectToRoute('affichagePub');
-    
-
-
+        return new Response('publicité supprimé');
     }
-
 
 
     /**
@@ -222,11 +220,13 @@ class PubController extends AbstractController
      */
     public function affc(EntityManagerInterface $em
     ,  \Swift_Mailer $mailer
+    , PubliciteRepository $rep
+    , Request $request
     ): Response //Request de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
     {
         $result=$em->createQuery("Select * from publicite ");
         $dp=new Publicite();
-        $dp=$rep->find($id);
+        //$dp=$rep->find($id);
         $form=$this->createForm(UpdateType::class,$dp);
         $form->handleRequest($request);
         if($form ->isSubmitted()){
