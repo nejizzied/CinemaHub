@@ -8,6 +8,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
@@ -46,8 +47,9 @@ class Cinema
     private $numTel;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255 , unique=true)
      * @Groups({"write" , "read"})
+     * @Assert\Email
      */
     private $email;
 
@@ -58,7 +60,7 @@ class Cinema
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=9999)
      * @Groups({"write" , "read"})
      */
     private $image;

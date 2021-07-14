@@ -5,4 +5,3 @@ api_platform:
         json: ['application/merge-patch+json']
     swagger:
         versions: [3]
-    path_segment_name_generator: 'api_platform.path_segment_name_generator.underscore'

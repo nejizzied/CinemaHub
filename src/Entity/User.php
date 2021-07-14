@@ -7,6 +7,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;use ApiPlatform\Core\Annotation\ApiResource;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Annotation\Context;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  *
@@ -17,6 +22,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * )
  */
 
+#[ApiFilter(SearchFilter::class, properties: ['email' => 'exact' , 'password' => 'exact'])]
 class User
 {
     /**
@@ -42,7 +48,9 @@ class User
     /**
      * @ORM\Column(type="date")
      *  @Groups ({"read" , "write"})
+     *
      */
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     private $dateDeNes;
 
     /**
@@ -52,13 +60,14 @@ class User
     private $password;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255 , unique=true)
      *  @Groups ({"read" , "write"})
+     * @Assert\Email
      */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=9999)
      *  @Groups ({"read" , "write"})
      */
     private $photoDeProfile;
