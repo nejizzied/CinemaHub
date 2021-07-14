@@ -11,6 +11,8 @@ use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Polyfill\Intl\Normalizer\Normalizer;
 use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
@@ -68,6 +70,7 @@ class Film
      * @Groups({"write" , "read"})
      *
      */
+
     private $prix;
 
     /**
