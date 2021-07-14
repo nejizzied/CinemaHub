@@ -25,23 +25,27 @@ class Reservation
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"write" , "read"})
      */
     private $nbrTickets;
 
     /**
      * @ORM\ManyToOne(targetEntity=Film::class, inversedBy="reservations")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"write" , "read"})
      */
     private $idFilm;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reservations")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"write" , "read"})
      */
     private $idUser;
 

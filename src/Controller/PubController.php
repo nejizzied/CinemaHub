@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PubliciteRepository;
-
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 
 class PubController extends AbstractController
@@ -23,24 +23,27 @@ class PubController extends AbstractController
     /**
      * @Route("/pub", name="pub")
      */
-    public function index(PubliciteRepository $publiciteRepository): Response
+    public function index(PubliciteRepository $publiciteRepository ,
+       NormalizerInterface $Normalizer
+    ): Response
     {
         $pub = $publiciteRepository->getCurrentPub();
-        return $this->render('pub/index.html.twig', [
-            'controller_name' => 'PubController',
-            'pub' => $pub
-        ]);
+        $jsonContent = $Normalizer->normalize($pub, 'json',['groups' => 'read' , 'enable_max_depth' => true]);
+        $retour=json_encode($jsonContent);
+        return new Response($retour);
+
     }
 
 
     /**
-     * @Route("/AjoutPub", name="AjoutPub")
+     * @Route("/api/AjoutPub", name="AjoutPub")
      */
     public function AjoutPub(Request $request,
         PubliciteRepository $publiciteRepository
         , EntityManagerInterface $em
     , \Swift_Mailer $mailer
     , CinemaRepository $cinemaRepository
+    , NormalizerInterface $Normalizer
     ): Response //Requestion de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
     {
 
