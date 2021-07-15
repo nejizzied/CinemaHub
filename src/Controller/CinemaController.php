@@ -23,7 +23,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class CinemaController extends AbstractController
 {
     /**
-     * @Route("/api/cinemalist/", name="getListCinema")
+     * @Route("/api/cinema/list/", name="getListCinema")
      */
     public function getListCinema(
                                      UserRepository $userRepository ,
