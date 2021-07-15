@@ -100,7 +100,7 @@ class Cinema
 
     /**
      * @ORM\OneToMany(targetEntity=SalleDeProjection::class, mappedBy="idCinema")
-     *
+     * @Groups({ "read"})
      *
      */
     private $salleDeProjections;
