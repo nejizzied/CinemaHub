@@ -33,9 +33,9 @@ class PubController extends AbstractController
     }
 
     /**
-     * @Route("/api/publicite/AjoutPub", name="AjoutPub")
+     * @Route("/api/publicite/AjoutPub", name="AjoutPub" , methods= {"get"})
      */
-    public function AjoutPub(Request $request,
+    public function getPub(Request $request,
         PubliciteRepository $publiciteRepository
         , EntityManagerInterface $em
     , \Swift_Mailer $mailer
@@ -90,28 +90,6 @@ class PubController extends AbstractController
         $form=$this->createForm(PublType::class,$pub);
         $form->handleRequest($request);
 
-        // initialiser le prix
-        $pub->setPrix(0);
-
-        if($form->isSubmitted()){
-
-                $pub->setEtat("Demande en cours de traitement");
-                $em ->persist($pub);
-                $em ->flush();
-
-            /*  PARTIE MAIL user ya3ml demande admin ijih mail
-              $message = (new \Swift_Message('Demande de Pub'))
-                ->setFrom('serviceclient619@gmail.com')
-                ->setTo('serviceclient619@gmail.com')
-                ->setBody('Le Cinéma '.$pub->getIdCinema()->getNomCinema().'a demandé une pub à la date merci de répondre a cette demande rapidement !')
-            ;
-
-            $mailer->send($message);
-*/
-
-            return new Response("Publicité ajouté");
-
-        }
 
         $jsonContent = $Normalizer->normalize([ 'form' => $form , 'dateDisableArray' => $dateDisabledArray , 'dateJcc' =>$dateJcc ]  , 'json',['groups' => 'read' , 'enable_max_depth' => true]);
         $retour=json_encode($jsonContent);
@@ -120,16 +98,43 @@ class PubController extends AbstractController
     }
 
     /**
+     * @Route("/api/publicite/AjoutPub", name="AjoutPub" , methods= {"post"})
+     */
+    public function AjoutPub(Request $request,
+                             PubliciteRepository $publiciteRepository
+        , EntityManagerInterface $em
+        , \Swift_Mailer $mailer
+        , CinemaRepository $cinemaRepository
+        , NormalizerInterface $Normalizer
+    ): Response //Requestion de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
+    {
+/*
+        $pub->setEtat("Demande en cours de traitement");
+        $em ->persist($pub);
+        $em ->flush();
+*/
+    #PARTIE MAIL user ya3ml demande admin ijih mail
+    $message = (new \Swift_Message('Demande de Pub'))
+    ->setFrom('labpiesprit@gmail.com')
+    ->setTo('labpiesprit@gmail.com')
+    ->setBody('Le Cinéma a demandé une pub à la date merci de répondre a cette demande rapidement !');
+    $mailer->send($message);
+
+
+
+return new Response("Publicité ajouté");
+
+}
+
+    /**
      * @Route("/api/publicite/affichagePub", name="affichagePub")
      */
     public function affichage(PubliciteRepository $rep , NormalizerInterface $Normalizer ): Response
     {
-       $list=$rep->findAll();
-
+        $list=$rep->findAll();
         $jsonContent = $Normalizer->normalize($list ,'json',['groups' => 'read' , 'enable_max_depth' => true]);
         $retour=json_encode($jsonContent);
         return new Response($retour);
-
     }
 
     /**

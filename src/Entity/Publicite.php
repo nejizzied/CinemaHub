@@ -4,7 +4,9 @@ namespace App\Entity;
 
 use App\Repository\PubliciteRepository;
 use Doctrine\ORM\Mapping as ORM;use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Context;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 /**
  *
@@ -53,17 +55,21 @@ class Publicite
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"write" , "read"})
      */
     private $prix;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"write" , "read"})
      */
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     private $date;
 
     /**
      * @ORM\ManyToOne(targetEntity=Cinema::class, inversedBy="publicites")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"write" })
      */
     private $idCinema;
 
@@ -71,16 +77,20 @@ class Publicite
     /**
      * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="publicites")
      * @ORM\JoinColumn(nullable=true)
+     * @Groups({"write"})
      */
     private $idAdmin;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"write" , "read"})
      */
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     private $datefin;
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"write" , "read"})
      */
     private $etat;
 
