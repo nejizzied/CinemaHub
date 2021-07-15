@@ -40,11 +40,6 @@ class Commentaire
      */
     private $idFilm;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="commentaires")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $idAdmin;
 
     public function getId(): ?int
     {
@@ -83,18 +78,6 @@ class Commentaire
     public function setIdFilm(?Film $idFilm): self
     {
         $this->idFilm = $idFilm;
-
-        return $this;
-    }
-
-    public function getIdAdmin(): ?Admin
-    {
-        return $this->idAdmin;
-    }
-
-    public function setIdAdmin(?Admin $idAdmin): self
-    {
-        $this->idAdmin = $idAdmin;
 
         return $this;
     }

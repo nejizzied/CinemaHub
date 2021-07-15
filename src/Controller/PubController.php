@@ -17,11 +17,10 @@ use Doctrine\ORM\EntityManagerInterface;
 use App\Repository\PubliciteRepository;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
-
 class PubController extends AbstractController
 {
     /**
-     * @Route("/pub", name="pub")
+     * @Route("/api/publicite/pub", name="pub")
      */
     public function index(PubliciteRepository $publiciteRepository ,
        NormalizerInterface $Normalizer
@@ -31,12 +30,10 @@ class PubController extends AbstractController
         $jsonContent = $Normalizer->normalize($pub, 'json',['groups' => 'read' , 'enable_max_depth' => true]);
         $retour=json_encode($jsonContent);
         return new Response($retour);
-
     }
 
-
     /**
-     * @Route("/api/AjoutPub", name="AjoutPub")
+     * @Route("/api/publicite/AjoutPub", name="AjoutPub")
      */
     public function AjoutPub(Request $request,
         PubliciteRepository $publiciteRepository
@@ -46,7 +43,6 @@ class PubController extends AbstractController
     , NormalizerInterface $Normalizer
     ): Response //Requestion de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
     {
-
         // get all pub confirmed afin de modifier le calendrier : itha ken date tekhdhét twalli gris fil calendrier
         $pubs = $publiciteRepository->getPubsByEtat("confirmed");
 
@@ -63,7 +59,6 @@ class PubController extends AbstractController
         }
 
         $dateStart->modify("1 day"); // nzidou nhar
-
 
         $maxDate = new \DateTime($dateStart->format('Y-m-d')) ;
         $maxDate->modify("3 month"); // preciser la date maximale d'une publicite = 3 mois
@@ -87,7 +82,6 @@ class PubController extends AbstractController
         $d1 = new \DateTime('2021-07-01') ;
         $d2 = new \DateTime('2021-07-07') ;
         $dateJcc = $this->createDateRangeArray( $d1->format('Y-m-d') ,$d2->format('Y-m-d'));
-
 
         $pub= new Publicite();
         // $user = $this->get('security.token_storage')->getToken()->getUser(); // get connected user
@@ -119,14 +113,14 @@ class PubController extends AbstractController
 
         }
 
-        $jsonContent = $Normalizer->normalize([ 'dateDisableArray' => $dateDisabledArray , 'dateJcc' =>$dateJcc ]  , 'json',['groups' => 'read' , 'enable_max_depth' => true]);
+        $jsonContent = $Normalizer->normalize([ 'form' => $form , 'dateDisableArray' => $dateDisabledArray , 'dateJcc' =>$dateJcc ]  , 'json',['groups' => 'read' , 'enable_max_depth' => true]);
         $retour=json_encode($jsonContent);
         return new Response($retour);
 
     }
 
-/**
-     * @Route("/affichagePub", name="affichagePub")
+    /**
+     * @Route("/api/publicite/affichagePub", name="affichagePub")
      */
     public function affichage(PubliciteRepository $rep , NormalizerInterface $Normalizer ): Response
     {
@@ -138,9 +132,8 @@ class PubController extends AbstractController
 
     }
 
-
-/**
-     * @Route("/ModifierPub/{id}", name="ModifierPub")
+    /**
+     * @Route("/api/publicite/ModifierPub/{id}", name="ModifierPub")
      */
     public function ModifierPub (PubliciteRepository $rep,$id,Request $request , EntityManagerInterface $em
     ,  \Swift_Mailer $mailer
@@ -152,13 +145,11 @@ class PubController extends AbstractController
         $dateStart = $rep->getLastConfirmedPub() != null && $rep->getLastConfirmedPub()->getDateFin() >= new \DateTime() ? $rep->getLastConfirmedPub()->getDateFin() : new \DateTime();
         $dateStart->modify("1 day");
 
-
         $maxDate = new \DateTime($dateStart->format('Y-m-d')) ;
         $maxDate->modify("3 month");
 
         $dateEnd = $rep->getFirstConfirmedPendingPub() != null ? $rep->getFirstConfirmedPendingPub()->getDate() : $maxDate ;
         $dateEnd->modify("-1 day");
-
 
         $dateDisabledArray = $this->createDateRangeArray( $dateStart->format('Y-m-d') ,$dateEnd->format('Y-m-d'));
 
@@ -166,8 +157,6 @@ class PubController extends AbstractController
         $d1 = new \DateTime('2021-07-01') ; // debut jcc
         $d2 = new \DateTime('2021-07-07') ; // fin jcc
         $dateJcc = $this->createDateRangeArray( $d1->format('Y-m-d') ,$d2->format('Y-m-d'));
-
-
 
         $dp=new Publicite();
         $dp=$rep->find($id);
@@ -178,7 +167,6 @@ class PubController extends AbstractController
             $em ->persist($dp);
             $em ->flush();
 
-
             $message = (new \Swift_Message('Demande de Prolongation de pub'))
                 ->setFrom('serviceclient619@gmail.com')
                 ->setTo('serviceclient619@gmail.com')
@@ -187,10 +175,7 @@ class PubController extends AbstractController
 
             $mailer->send($message);
 
-
-
             return new Response("publicité modifié");
-
         }
 
         $jsonContent = $Normalizer->normalize(['invalidDates' => $dateDisabledArray ,
@@ -201,7 +186,7 @@ class PubController extends AbstractController
 
 
     /**
-     * @Route("/DELPub/{id}", name="DELPub")
+     * @Route("/api/publicite//DelPub/{id}", name="DelPub")
      */
     public function DELPub ($id,Request $request )
     {
@@ -219,7 +204,7 @@ class PubController extends AbstractController
      * @Route("/affc", name="affc")
      */
     public function affc(EntityManagerInterface $em
-    ,  \Swift_Mailer $mailer
+    , \Swift_Mailer $mailer
     , PubliciteRepository $rep
     , Request $request
     ): Response //Request de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
@@ -266,7 +251,7 @@ class PubController extends AbstractController
     }
 
     /**
-     * @Route("/ConfirmerPub/{id}", name="ConfirmerPub")
+     * @Route("/api/publicite//ConfirmerPub/{id}", name="ConfirmerPub")
      */
     public function ConfirmerPub (PubliciteRepository $rep,$id,Request $request ,
           \Swift_Mailer $mailer ,
@@ -276,7 +261,6 @@ class PubController extends AbstractController
     {
         $dp=new Publicite();
         $dp=$rep->find($id);
-
         $dp->setEtat('confirmed') ;
         $dp->setIdAdmin($adminRepository->findAll()[0]); // get connceted user but it's static now
         $em ->persist($dp);
@@ -292,13 +276,13 @@ class PubController extends AbstractController
         $mailer->send($message);
 
 
-        return $this->redirectToRoute('affichagePub');
+        return new Response("Confirmed");
 
     }
 
 
     /**
-     * @Route("/AnnulerPub/{id}", name="AnnulerPub")
+     * @Route("/api/publicite/AnnulerPub/{id}", name="AnnulerPub")
      */
     public function AnnulerPub (PubliciteRepository $rep,$id,Request $request ,
                                  AdminRepository $adminRepository,
@@ -312,12 +296,12 @@ class PubController extends AbstractController
         $em ->persist($dp);
         $em ->flush();
 
-        return $this->redirectToRoute('affichagePub');
+        return new Response("Canceled");
 
     }
     
     /**
-     * @Route("/affichagePubCinema", name="affichagePubCinema")
+     * @Route("/api/publicite/affichagePubCinema", name="affichagePubCinema")
      */
     public function affichageCinemaPub(PubliciteRepository $rep
         ,  \Swift_Mailer $mailer
@@ -352,8 +336,10 @@ class PubController extends AbstractController
             }
         }
 
-        return $this->render('pub/cinemaAffPub.html.twig', [
-            'list' =>$list
-        ]);
+        $jsonContent = $Normalizer->normalize($list,'json',['groups' => 'read' , 'enable_max_depth' => true]);
+        $retour=json_encode($jsonContent);
+        return new Response($retour);
+
+
     }
 }

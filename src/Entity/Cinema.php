@@ -87,6 +87,8 @@ class Cinema
 
     /**
      * @ORM\OneToMany(targetEntity=SalleDeProjection::class, mappedBy="idCinema")
+     *
+     *
      */
     private $salleDeProjections;
 
@@ -95,10 +97,17 @@ class Cinema
      */
     private $publicites;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Evaluation::class, mappedBy="idCinema", orphanRemoval=true)
+     * @Groups({"read"})
+     */
+    private $evaluations;
+
     public function __construct()
     {
         $this->salleDeProjections = new ArrayCollection();
         $this->publicites = new ArrayCollection();
+        $this->evaluations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -256,6 +265,36 @@ class Cinema
             // set the owning side to null (unless already changed)
             if ($publicite->getIdCinema() === $this) {
                 $publicite->setIdCinema(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Evaluation[]
+     */
+    public function getEvaluations(): Collection
+    {
+        return $this->evaluations;
+    }
+
+    public function addEvaluation(Evaluation $evaluation): self
+    {
+        if (!$this->evaluations->contains($evaluation)) {
+            $this->evaluations[] = $evaluation;
+            $evaluation->setIdCinema($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEvaluation(Evaluation $evaluation): self
+    {
+        if ($this->evaluations->removeElement($evaluation)) {
+            // set the owning side to null (unless already changed)
+            if ($evaluation->getIdCinema() === $this) {
+                $evaluation->setIdCinema(null);
             }
         }
 

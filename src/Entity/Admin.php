@@ -51,10 +51,6 @@ class Admin
      */
     private $films;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="idAdmin")
-     */
-    private $commentaires;
 
     /**
      * @ORM\Column(type="string", length=255)
@@ -158,36 +154,6 @@ class Admin
             // set the owning side to null (unless already changed)
             if ($film->getIdAdmin() === $this) {
                 $film->setIdAdmin(null);
-            }
-        }
-
-        return $this;
-    }
-
-    /**
-     * @return Collection|Commentaire[]
-     */
-    public function getCommentaires(): Collection
-    {
-        return $this->commentaires;
-    }
-
-    public function addCommentaire(Commentaire $commentaire): self
-    {
-        if (!$this->commentaires->contains($commentaire)) {
-            $this->commentaires[] = $commentaire;
-            $commentaire->setIdAdmin($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCommentaire(Commentaire $commentaire): self
-    {
-        if ($this->commentaires->removeElement($commentaire)) {
-            // set the owning side to null (unless already changed)
-            if ($commentaire->getIdAdmin() === $this) {
-                $commentaire->setIdAdmin(null);
             }
         }
 

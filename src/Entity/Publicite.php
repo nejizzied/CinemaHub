@@ -11,7 +11,33 @@ use Symfony\Component\Serializer\Annotation\Groups;
  * @ORM\Entity(repositoryClass=PubliciteRepository::class)
  *
  * @ApiResource( normalizationContext={"groups"={"read"}}  ,
- *  denormalizationContext={"groups"={"write"}} , formats={"json"}
+ *  denormalizationContext={"groups"={"write"}} , formats={"json"} ,
+ *     itemOperations = {
+ *          "get",
+ *          "put",
+ *          "patch",
+ *          "affichagePubCinema" = {
+ *              "route_name" = "affichagePubCinema",
+ *          },
+ *     "AnnulerPub" = {
+ *              "route_name" = "AnnulerPub",
+ *          },
+ *     "ConfirmerPub" = {
+ *              "route_name" = "ConfirmerPub",
+ *          },
+ *     "DelPub" = {
+ *              "route_name" = "DelPub",
+ *          },
+ *     "ModifierPub" = {
+ *              "route_name" = "ModifierPub",
+ *          },
+ *     "AjoutPub" = {
+ *              "route_name" = "AjoutPub",
+ *          },
+ *      "pub" = {
+ *              "route_name" = "pub",
+ *          },
+ * }
  * )
  */
 
