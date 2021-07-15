@@ -51,7 +51,7 @@ class SalleDeProjection
     /**
      * @ORM\ManyToOne(targetEntity=Cinema::class, inversedBy="salleDeProjections")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"write" , "read"})
+     * @Groups({"write"})
      */
     private $idCinema;
 
