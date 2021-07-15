@@ -20,23 +20,27 @@ class Commentaire
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read"  , "write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"write" , "read"})
      */
     private $text;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="commentaires")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"write" , "read"})
      */
     private $idUser;
 
     /**
      * @ORM\ManyToOne(targetEntity=Film::class, inversedBy="commentaires")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"write" , "read"})
      */
     private $idFilm;
 

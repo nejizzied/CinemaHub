@@ -24,10 +24,10 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
 
 
-class ReservationController extends AbstractController
+class StatistiqueController extends AbstractController
 {
     /**
-     * @Route("/api/reservation/test/{id}", name="reservation_test" , methods={"post"})
+     * @Route("/api/statistiques/", name="statistique" , methods={"get"})
      */
     public function cinemaEvaluation(Request $request , $id ,
                                      UserRepository $userRepository ,
@@ -35,24 +35,16 @@ class ReservationController extends AbstractController
                                      CinemaRepository $cinemaRepository,
                                      AdminRepository$adminRepository,
                                      EvaluationRepository $evaluationRepository ,
-                                    ReservationRepository $reservationRepository ,
-                                    SalleDeProjectionRepository $salleDeProjectionRepository,
+                                     ReservationRepository $reservationRepository ,
+                                     SalleDeProjectionRepository $salleDeProjectionRepository,
     ): Response
     {
+        // nbr de reservation par film
+        // nbr de film par cinema
+        // nbr de ticket par place
 
-        $reservation = new Reservation();
-        $data = json_decode($request->getContent(), true);
-        empty($data['nbrTicket']) ? true : $reservation->setNbrTickets(($data['nbrTicket']));
-
-
-        $salleProjecton = new SalleDeProjection();
-        $salleProjecton = $salleDeProjectionRepository->findOneBy(['idFilm'=>$id]);
-        if($salleProjecton != null) {
-            if ($reservation->getNbrTickets() <= $salleProjecton->getNbrPlaces()) {
-                return new Response('done');
-            }
-            return new Response('no places availble', Response::HTTP_BAD_REQUEST);
-        }
+        $jsonContent = $Normalizer->normalize(['rating' => $rating], 'json',['groups' => 'read' , 'enable_max_depth' => true]);
+        $retour=json_encode($jsonContent);
         return new Response('no projection found', Response::HTTP_BAD_REQUEST);
     }
 }
