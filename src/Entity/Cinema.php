@@ -99,7 +99,7 @@ class Cinema
 
     /**
      * @ORM\OneToMany(targetEntity=Evaluation::class, mappedBy="idCinema", orphanRemoval=true)
-     * @Groups({"read"})
+     *
      */
     private $evaluations;
 
