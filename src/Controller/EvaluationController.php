@@ -39,6 +39,7 @@ class EvaluationController extends AbstractController
                 foreach ($evaluations as $ev) {
                     $rating += $ev->getNote();
                 }
+                if (sizeof($evaluations)!=0)
                 $rating = $rating / sizeof($evaluations);
             }
             $jsonContent = $Normalizer->normalize(['rating' => $rating], 'json',['groups' => 'read' , 'enable_max_depth' => true]);
