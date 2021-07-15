@@ -24,9 +24,18 @@ use Vich\UploaderBundle\Mapping\Annotation as Vich;
  *                          "post" = {
  *                          "input_formats" = {
  *                               "multipart" = {"multipart/form-data"},
+ *                                  },
+ *                              },
  *                          },
- *                          },
- *                          },
+ * itemOperations = {
+ *      "get",
+ *      "put",
+ *      "patch",
+ *      "getListCinema" = {
+ *          "route_name" = "getListCinema",
+ *          "normalizationContext" = {"groups" = { "read" ,"other"}},
+ *          },
+ *      }
  * )
  */
 class Cinema
@@ -66,7 +75,7 @@ class Cinema
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write" , "read"})
+     * @Groups({"write" })
      */
     private $password;
 
@@ -83,7 +92,11 @@ class Cinema
      */
     private $imageFile;
 
-
+    /**
+     *
+     *  @Groups ({"other"})
+     */
+    private $rating ;
 
     /**
      * @ORM\OneToMany(targetEntity=SalleDeProjection::class, mappedBy="idCinema")
@@ -299,5 +312,21 @@ class Cinema
         }
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRating()
+    {
+        return $this->rating;
+    }
+
+    /**
+     * @param mixed $rating
+     */
+    public function setRating($rating): void
+    {
+        $this->rating = $rating;
     }
 }
