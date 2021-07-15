@@ -43,6 +43,7 @@ class CinemaController extends AbstractController
             foreach ($evaluations as $ev) {
                 $rating += $ev->getNote();
             }
+            if($evaluationNumber != 0)
             $rating = $rating / $evaluationNumber ;
             $cin->setRating( $rating) ;
             array_push($res , $cin) ;
