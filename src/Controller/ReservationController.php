@@ -30,7 +30,7 @@ class ReservationController extends AbstractController
     /**
      * @Route("/api/reservations/ajouter", name="reservation_ajouté" , methods={"post"})
      */
-    public function cinemaEvaluation(Request $request, $id,
+    public function cinemaEvaluation(Request $request,
                                      UserRepository $userRepository,
                                      NormalizerInterface $Normalizer,
                                      CinemaRepository $cinemaRepository,
