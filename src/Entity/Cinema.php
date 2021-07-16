@@ -152,12 +152,12 @@ class Cinema
         return $this;
     }
 
-    public function getNumTel(): ?int
+    public function getNumTel(): ?string
     {
         return $this->numTel;
     }
 
-    public function setNumTel(int $numTel): self
+    public function setNumTel(string $numTel): self
     {
         $this->numTel = $numTel;
 
