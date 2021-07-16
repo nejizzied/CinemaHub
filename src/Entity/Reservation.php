@@ -49,6 +49,12 @@ class Reservation
      */
     private $idUser;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"write" , "read"})
+     */
+    private $status;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -86,6 +92,18 @@ class Reservation
     public function setIdUser(?User $idUser): self
     {
         $this->idUser = $idUser;
+
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus(?string $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }
