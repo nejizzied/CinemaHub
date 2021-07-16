@@ -47,6 +47,8 @@ class ReservationController extends AbstractController
         $data = json_decode($request->getContent(), true);
         empty($data['nbrTickets']) ? true : $reservation->setNbrTickets(($data['nbrTickets']));
         empty($data['idUser']) ? true : $reservation->setIdUser($userRepository->find($data['idUser']));
+        empty($data['idFilm']) ? true : $id = $data['idFilm'];
+
         $reservation->setIdFilm($filmRepository->find($id));
         $placesDispo = 0 ;
         $placesDispo = sizeof($reservationRepository->findBy(['idFilm' =>$id , 'status' => 'confirmé']));
