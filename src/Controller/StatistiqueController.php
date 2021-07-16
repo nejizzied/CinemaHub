@@ -43,8 +43,8 @@ class StatistiqueController extends AbstractController
         // nbr de film par cinema
         // nbr de ticket par place
 
-        $jsonContent = $Normalizer->normalize(['rating' => $rating], 'json',['groups' => 'read' , 'enable_max_depth' => true]);
-        $retour=json_encode($jsonContent);
+        // $jsonContent = $Normalizer->normalize(['rating' => $rating], 'json',['groups' => 'read' , 'enable_max_depth' => true]);
+        // $retour=json_encode($jsonContent);
         return new Response('no projection found', Response::HTTP_BAD_REQUEST);
     }
 }
