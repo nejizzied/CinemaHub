@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Controller;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Form\PublType;
 use App\Form\UpdateType;
 use App\Entity\Publicite;
