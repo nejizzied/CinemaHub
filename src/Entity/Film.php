@@ -164,14 +164,14 @@ class Film
         return $this;
     }
 
-    public function getPrix(): ?int
+    public function getPrix(): ?string
     {
         return $this->prix;
     }
 
     public function setPrix($prix): self
     {
-        $this->prix = (int)$prix;
+        $this->prix = $prix;
 
         return $this;
     }
