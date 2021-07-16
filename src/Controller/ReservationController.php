@@ -45,7 +45,7 @@ class ReservationController extends AbstractController
     {
         $reservation = new Reservation();
         $data = json_decode($request->getContent(), true);
-        empty($data['nbrTicket']) ? true : $reservation->setNbrTickets(($data['nbrTicket']));
+        empty($data['nbrTickets']) ? true : $reservation->setNbrTickets(($data['nbrTickets']));
         empty($data['idUser']) ? true : $reservation->setIdUser($userRepository->find($data['idUser']));
         $reservation->setIdFilm($filmRepository->find($id));
         $placesDispo = 0 ;
