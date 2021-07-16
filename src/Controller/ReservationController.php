@@ -59,15 +59,22 @@ class ReservationController extends AbstractController
         if ($salleProjecton != null) {
             if ($reservation->getNbrTickets() <= $placesDispo) {
                 $reservation->setStatus('en attente de confirmation');
-                $user->setPointFidelite($user->getPointFidelite() + 2);
-                $em->persist($user);
                 $em->persist($reservation);
                 $em ->flush();
-                return new Response('Reservation Ajouté');
+
+                $jsonContent = $Normalizer->normalize(['msg' => 'Reservation Ajouté'], 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
+                $retour=json_encode($jsonContent);
+                return new Response($retour);
             }
-            return new Response('aucune place disponible', Response::HTTP_BAD_REQUEST);
+
+            $jsonContent = $Normalizer->normalize(['msg' => 'aucune place disponible' ], 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
+            $retour=json_encode($jsonContent);
+            return new Response($retour);
         }
-        return new Response('pas de salle de projection trouvé', Response::HTTP_BAD_REQUEST);
+
+        $jsonContent = $Normalizer->normalize(['msg' => 'pas de salle de projection trouvé' ], 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
+        $retour=json_encode($jsonContent);
+        return new Response($retour, Response::HTTP_BAD_REQUEST);
     }
 
 
@@ -118,10 +125,13 @@ class ReservationController extends AbstractController
     {
 
         $reservation = $reservationRepository->find($id);
+        $user = $reservation->getIdUser();
+        $user->setPointFidelite($user->getPointFidelite() + 2);
 
         if ($reservation != null) {
 
             $reservation->setStatus("confirmé");
+            $em->persist($user);
             $em->persist($reservation);
             $em ->flush();
 
