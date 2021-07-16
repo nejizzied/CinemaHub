@@ -28,7 +28,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 class ReservationController extends AbstractController
 {
     /**
-     * @Route("/api/reservation/ajouter", name="reservation_ajouté" , methods={"post"})
+     * @Route("/api/reservations/ajouter", name="reservation_ajouté" , methods={"post"})
      */
     public function cinemaEvaluation(Request $request, $id,
                                      UserRepository $userRepository,
@@ -70,7 +70,7 @@ class ReservationController extends AbstractController
 
 
     /**
-     * @Route("/api/reservation/annuler/{id}", name="reservation_annuler" )
+     * @Route("/api/reservations/annuler/{id}", name="reservation_annuler" )
      */
     public function annulerReservation(Request $request, $id,
                                      UserRepository $userRepository,
@@ -101,7 +101,7 @@ class ReservationController extends AbstractController
     }
 
     /**
-     * @Route("/api/reservation/confirmer/{id}", name="reservation_confirmer" )
+     * @Route("/api/reservations/confirmer/{id}", name="reservation_confirmer" )
      */
     public function confirmerReservation(Request $request, $id,
                                      UserRepository $userRepository,
