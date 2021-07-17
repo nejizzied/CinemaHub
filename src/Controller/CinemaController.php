@@ -51,11 +51,8 @@ class CinemaController extends AbstractController
             array_push($res , $cin) ;
         }
 
-
-
         $jsonContent = $Normalizer->normalize($res, 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
         $retour=json_encode($jsonContent);
         return new Response($retour);
-
     }
 }

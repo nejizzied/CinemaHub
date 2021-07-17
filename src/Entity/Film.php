@@ -117,6 +117,11 @@ class Film
      */
     private $commentaires;
 
+    /**
+     * @Groups({"other"})
+     */
+    private $status;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
@@ -173,6 +178,17 @@ class Film
     {
         $this->prix = $prix;
 
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus($status): self
+    {
+        $this->status = $status;
         return $this;
     }
 
