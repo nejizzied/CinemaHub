@@ -49,7 +49,7 @@ class FilmController extends AbstractController
 
             $placesDispo =$s->getNbrPlaces() - sizeof($reservationRepository->findBy(['idFilm' =>$s->getIdFilm()->getId() , 'status' => 'confirmé']));
 
-            if( $placesDispo )
+            if( $placesDispo == 0 )
             {
                 $c = $s->getIdFilm();
                 $c->setStatus("complet");
