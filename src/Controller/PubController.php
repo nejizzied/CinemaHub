@@ -89,6 +89,10 @@ class PubController extends AbstractController
     ): Response //Requestion de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
     {
 
+
+        $dp=new Publicite();
+        $data = json_decode($request->getContent(), true);
+
         empty($data['date']) ? true : $dp->setDate( new \DateTime($data['date']));
         empty($data['datefin']) ? true : $dp->setDateFin(new \DateTime($data['datefin']));
 
