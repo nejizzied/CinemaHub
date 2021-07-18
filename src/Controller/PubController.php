@@ -35,20 +35,41 @@ class PubController extends AbstractController
         $dp=new Publicite();
         $data = json_decode($request->getContent(), true);
 
-        empty($data['prix']) ? true : $dp->setPrix($data['prix']);
+
         empty($data['idCinema']) ? true : $dp->setIdCinema($cinemaRepository->find($data['idCinema']));
         empty($data['date']) ? true : $dp->setDate( new \DateTime($data['date']));
         empty($data['dateFin']) ? true : $dp->setDateFin(new \DateTime($data['dateFin']));
 
+        // calcul prix
+        // definition intervale mta3 ayamet el jcc
+        $d1 = new \DateTime('2022-01-01') ; // debut jcc
+        $d2 = new \DateTime('2022-01-07') ; // fin jcc
+        $dateJcc = $this->createDateRangeArray( $d1->format('Y-m-d') ,$d2->format('Y-m-d'));
+        $dateRanges = $this->createDateRangeArray($dp->getDate()->format('Y-m-d') , $dp->getDateFin()->format('Y-m-d'));
+        $prix = 0 ;
+
+        foreach  ( $dateRanges as $md)
+        {
+            if(in_array($md , $dateJcc) )
+            {
+                $prix += 100 ;
+                }
+                else{
+                    $prix += 50 ;
+                }
+        }
+
+        $dp->setPrix($prix);
         $dp->setEtat('en cours de traitement');
         $em ->persist($dp);
         $em ->flush();
         $message = (new \Swift_Message('Demande de pub'))
-            ->setFrom('serviceclient619@gmail.com')
-            ->setTo('serviceclient619@gmail.com')
-            ->setBody('Le Cinéma '.$dp->getIdCinema()->getNomCinema().'a demandé une une pub merci de répondre a cette demande rapidement !')
+            ->setFrom('labpiesprit@gmail.com')
+            ->setTo('labpiesprit@gmail.com')
+            ->setBody('Le Cinéma '.$dp->getIdCinema()->getNomCinema().'a demandé une une pub ( '.
+                $dp->getDate()->format('Y-m-d').' - '.$dp->getDateFin()->format('Y-m-d')
+                .' ) merci de répondre a cette demande rapidement !')
         ;
-
         $mailer->send($message);
         $jsonContent = $Normalizer->normalize(['msg' => "Demande envoyé"]);
         $retour=json_encode($jsonContent);
@@ -80,17 +101,39 @@ class PubController extends AbstractController
         $dp=new Publicite();
         $dp=$rep->find($id);
         $data = json_decode($request->getContent(), true);
-        empty($data['prix']) ? true : $dp->setPrix($data['prix']);
         empty($data['idCinema']) ? true : $dp->setIdCinema($cinemaRepository->find($data['idCinema']));
-        empty($data['date']) ? true : $dp->setDate($data['date']);
-        empty($data['dateFin']) ? true : $dp->setDateFin($data['dateFin']);
+        empty($data['date']) ? true : $dp->setDate(new \DateTime($data['date']));
+        empty($data['dateFin']) ? true : $dp->setDateFin(new \DateTime($data['dateFin']));
+
+
+        // definition intervale mta3 ayamet el jcc
+        $d1 = new \DateTime('2022-01-01') ; // debut jcc
+        $d2 = new \DateTime('2022-01-07') ; // fin jcc
+        $dateJcc = $this->createDateRangeArray( $d1->format('Y-m-d') ,$d2->format('Y-m-d'));
+        $dateRanges = $this->createDateRangeArray($dp->getDate()->format('Y-m-d') , $dp->getDateFin()->format('Y-m-d'));
+        $prix = 0 ;
+
+        foreach  ( $dateRanges as $md)
+        {
+            if(in_array($md , $dateJcc) )
+            {
+                $prix += 100 ;
+            }
+            else{
+                $prix += 50 ;
+            }
+        }
+
+        $dp->setPrix($prix);
+
+
         $dp->setEtat('Demande de Prolongation');
         $em ->persist($dp);
         $em ->flush();
         $message = (new \Swift_Message('Demande de Prolongation de pub'))
-                ->setFrom('serviceclient619@gmail.com')
-                ->setTo('serviceclient619@gmail.com')
-                ->setBody('Le Cinéma '.$dp->getIdCinema()->getNomCinema().'a demandé une prologation une pub à la date merci de répondre a cette demande rapidement !')
+                ->setFrom('labpiesprit@gmail.com')
+                ->setTo('labpiesprit@gmail.com')
+                ->setBody('Le Cinéma '.$dp->getIdCinema()->getNomCinema().'a demandé une prologation une pub  merci de répondre a cette demande rapidement !')
             ;
 
             $mailer->send($message);
@@ -101,7 +144,7 @@ class PubController extends AbstractController
 
 
     /**
-     * @Route("/api/DelPub/{id}", name="DelPub")
+     * @Route("/api/DelPub/{id}", name="DelPub" , methods={"delete"})
      */
     public function DELPub ($id,Request $request
         ,  NormalizerInterface $Normalizer)
@@ -136,7 +179,7 @@ class PubController extends AbstractController
         $em ->flush();
 
         $message = (new \Swift_Message('Demande de Pub Accepter'))
-            ->setFrom('serviceclient619@gmail.com')
+            ->setFrom('labpiesprit@gmail.com')
             ->setTo($dp->getIdCinema()->getEmail())
             ->setBody('votre demande de pub a été accepté avec succées !')
         ;
@@ -174,22 +217,23 @@ class PubController extends AbstractController
     }
     
     /**
-     * @Route("/api/affichagePubCinema/{id}", name="affichagePubCinema")
+     * @Route("/api/getPubByCinema/{id}", name="affichage_pub_par_cinema" )
      */
-    public function affichageCinemaPub( Request $request , $id, PubliciteRepository $rep
+    public function affichagePubCinema( Request $request
+        , $id
+        , PubliciteRepository $rep
         ,  \Swift_Mailer $mailer
-        , CinemaRepository $cinemaRepository ,
-                                        EntityManagerInterface $em ,  NormalizerInterface $Normalizer) : Response
+        , CinemaRepository $cinemaRepository
+        , EntityManagerInterface $em
+        , NormalizerInterface $Normalizer) : Response
     {
 
         $data = json_decode($request->getContent(), true);
-
         $cinema = new Cinema();
-        empty($data['idCinema']) ? true : $cinema = $cinemaRepository->find($id);
-
+         $cinema = $cinemaRepository->find($id);
         $list=$rep->findBy(['idCinema' => $cinema]);
-        $dateToNotify = new \DateTime() ;
 
+        $dateToNotify = new \DateTime() ;
         // boucle sur tt les publicite kén l9a wa7da date mté3ha wfét i7otélha el etat expiré
         foreach ($list as $l)
         {
@@ -201,14 +245,15 @@ class PubController extends AbstractController
         }
         $em ->flush();
         // itha kén tawa el date mt23ha 9orbet b 2 jours yab3éth mail
-        $dateToNotify->modify('2 day');
+        $dateToNotify->modify('1 day');
         $l = new Publicite();
-        foreach ($l as $list)
+
+        foreach ($list as $l)
         {
-            if($dateToNotify == $l->getDateFin())
+            if($dateToNotify->format('Y-m-d') == $l->getDateFin()->format('Y-m-d') && $l->getEtat() == "confirmed")
             {
                 $message = (new \Swift_Message('Your Pub is going to expire'))
-                    ->setFrom('serviceclient619@gmail.com')
+                    ->setFrom('labpiesprit@gmail.com')
                     ->setTo($l->getIdCinema()->getEmail())
                     ->setBody('votre pub va etre expiré merci de prolongé votre pub !');
                 $mailer->send($message);
