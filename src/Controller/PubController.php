@@ -128,7 +128,7 @@ class PubController extends AbstractController
     }
 
     /**
-     * @Route("/api/publicites//ConfirmerPub/{id}", name="ConfirmerPub")
+     * @Route("/api/publicites/ConfirmerPub/{id}", name="ConfirmerPub")
      */
     public function ConfirmerPub (PubliciteRepository $rep,$id,Request $request ,
                                   \Swift_Mailer $mailer ,
@@ -184,9 +184,9 @@ class PubController extends AbstractController
     }
     
     /**
-     * @Route("/api/publicites/affichagePubCinema", name="affichagePubCinema")
+     * @Route("/api/publicites/affichagePubCinema/{id}", name="affichagePubCinema")
      */
-    public function affichageCinemaPub( Request $request , PubliciteRepository $rep
+    public function affichageCinemaPub( Request $request , $id, PubliciteRepository $rep
         ,  \Swift_Mailer $mailer
         , CinemaRepository $cinemaRepository , EntityManagerInterface $em): Response
     {
@@ -194,7 +194,7 @@ class PubController extends AbstractController
         $data = json_decode($request->getContent(), true);
 
         $cinema = new Cinema();
-        empty($data['idCinema']) ? true : $cinema = $cinemaRepository->find($data['idCinema']);
+        empty($data['idCinema']) ? true : $cinema = $cinemaRepository->find($id);
 
         // $user = $this->get('security.token_storage')->getToken()->getUser(); // get connected user
         $list=$rep->findBy(['id_cinema' => $cinema]); // get connected user but it's statique
