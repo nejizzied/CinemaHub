@@ -71,7 +71,7 @@ class PubController extends AbstractController
                 .' ) merci de répondre a cette demande rapidement !')
         ;
         $mailer->send($message);
-        $jsonContent = $Normalizer->normalize(['msg' => "Demande envoyé"]);
+        $jsonContent = $Normalizer->normalize(['msg' => "Demande envoyé" , 'prix' => $dp->getPrix()]);
         $retour=json_encode($jsonContent);
         return new Response($retour);
 
@@ -103,7 +103,7 @@ class PubController extends AbstractController
         $data = json_decode($request->getContent(), true);
         empty($data['idCinema']) ? true : $dp->setIdCinema($cinemaRepository->find($data['idCinema']));
         empty($data['date']) ? true : $dp->setDate(new \DateTime($data['date']));
-        empty($data['dateFin']) ? true : $dp->setDateFin(new \DateTime($data['dateFin']));
+        empty($data['datefin']) ? true : $dp->setDateFin(new \DateTime($data['datefin']));
 
 
         // definition intervale mta3 ayamet el jcc
