@@ -92,16 +92,12 @@ class ReservationController extends AbstractController
                                      EntityManagerInterface $em
     ): Response
     {
-
         $reservation = $reservationRepository->find($id);
-
         if ($reservation != null) {
-
             $reservation->setStatus("annulé");
             $em=$this->getDoctrine()->getManager();
             $em->persist($reservation);
             $em ->flush();
-
             $jsonContent = $Normalizer->normalize($reservation, 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
             $retour=json_encode($jsonContent);
             return new Response($retour);
@@ -123,7 +119,6 @@ class ReservationController extends AbstractController
                                      EntityManagerInterface $em
     ): Response
     {
-
         $reservation = $reservationRepository->find($id);
         $user = $reservation->getIdUser();
         $user->setPointFidelite($user->getPointFidelite() + 2);
@@ -141,5 +136,4 @@ class ReservationController extends AbstractController
         }
         return new Response('no reservation found', Response::HTTP_BAD_REQUEST);
     }
-
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Controller;
+use App\Entity\Cinema;
 use App\Form\PublType;
 use App\Form\UpdateType;
 use App\Entity\Publicite;
@@ -33,9 +34,9 @@ class PubController extends AbstractController
     }
 
     /**
-     * @Route("/api/publicite/AjoutPub", name="AjoutPub" , methods= {"get"})
+     * @Route("/api/publicite/AjoutPub", name="AjoutPub" , methods= {"post"})
      */
-    public function getPub(Request $request,
+    public function ajouterPub(Request $request,
         PubliciteRepository $publiciteRepository
         , EntityManagerInterface $em
     , \Swift_Mailer $mailer
@@ -90,7 +91,6 @@ class PubController extends AbstractController
         $form=$this->createForm(PublType::class,$pub);
         $form->handleRequest($request);
 
-
         $jsonContent = $Normalizer->normalize([ 'form' => $form , 'dateDisableArray' => $dateDisabledArray , 'dateJcc' =>$dateJcc ]  , 'json',['groups' => 'read' , 'enable_max_depth' => true]);
         $retour=json_encode($jsonContent);
         return new Response($retour);
@@ -122,14 +122,14 @@ class PubController extends AbstractController
 
 
 
-return new Response("Publicité ajouté");
+    return new Response("Publicité ajouté");
 
-}
+    }
 
     /**
      * @Route("/api/publicite/affichagePub", name="affichagePub")
      */
-    public function affichage(PubliciteRepository $rep , NormalizerInterface $Normalizer ): Response
+    public function afficherPub(PubliciteRepository $rep , NormalizerInterface $Normalizer ): Response
     {
         $list=$rep->findAll();
         $jsonContent = $Normalizer->normalize($list ,'json',['groups' => 'read' , 'enable_max_depth' => true]);
@@ -138,53 +138,33 @@ return new Response("Publicité ajouté");
     }
 
     /**
-     * @Route("/api/publicite/ModifierPub/{id}", name="ModifierPub")
+     * @Route("/api/publicite/ProlongerPub/{id}", name="ProlongerPub" , methods = {"post"})
      */
-    public function ModifierPub (PubliciteRepository $rep,$id,Request $request , EntityManagerInterface $em
+    public function ProlongerPub (PubliciteRepository $rep,$id,Request $request , EntityManagerInterface $em
     ,  \Swift_Mailer $mailer
-    ,  NormalizerInterface $Normalizer
+    ,  NormalizerInterface $Normalizer,
+    CinemaRepository $cinemaRepository
     ): Response //Request de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
     {
 
-        $pubs = $rep->getPubsByEtat("confirmed");
-        $dateStart = $rep->getLastConfirmedPub() != null && $rep->getLastConfirmedPub()->getDateFin() >= new \DateTime() ? $rep->getLastConfirmedPub()->getDateFin() : new \DateTime();
-        $dateStart->modify("1 day");
-
-        $maxDate = new \DateTime($dateStart->format('Y-m-d')) ;
-        $maxDate->modify("3 month");
-
-        $dateEnd = $rep->getFirstConfirmedPendingPub() != null ? $rep->getFirstConfirmedPendingPub()->getDate() : $maxDate ;
-        $dateEnd->modify("-1 day");
-
-        $dateDisabledArray = $this->createDateRangeArray( $dateStart->format('Y-m-d') ,$dateEnd->format('Y-m-d'));
-
-        // definition intervale mta3 ayamet el jcc
-        $d1 = new \DateTime('2021-07-01') ; // debut jcc
-        $d2 = new \DateTime('2021-07-07') ; // fin jcc
-        $dateJcc = $this->createDateRangeArray( $d1->format('Y-m-d') ,$d2->format('Y-m-d'));
-
         $dp=new Publicite();
         $dp=$rep->find($id);
-        $form=$this->createForm(UpdateType::class,$dp);
-        $form->handleRequest($request);
-        if($form ->isSubmitted()){
-            $dp->setEtat('Demande de Prolongation');
-            $em ->persist($dp);
-            $em ->flush();
-
-            $message = (new \Swift_Message('Demande de Prolongation de pub'))
+        $data = json_decode($request->getContent(), true);
+        empty($data['prix']) ? true : $dp->setPrix($data['prix']);
+        empty($data['idCinema']) ? true : $dp->setIdCinema($cinemaRepository->find($data['idCinema']));
+        empty($data['date']) ? true : $dp->setDate($data['date']);
+        empty($data['dateFin']) ? true : $dp->setDateFin($data['dateFin']);
+        $dp->setEtat('Demande de Prolongation');
+        $em ->persist($dp);
+        $em ->flush();
+        $message = (new \Swift_Message('Demande de Prolongation de pub'))
                 ->setFrom('serviceclient619@gmail.com')
                 ->setTo('serviceclient619@gmail.com')
                 ->setBody('Le Cinéma '.$dp->getIdCinema()->getNomCinema().'a demandé une prologation une pub à la date merci de répondre a cette demande rapidement !')
             ;
 
             $mailer->send($message);
-
-            return new Response("publicité modifié");
-        }
-
-        $jsonContent = $Normalizer->normalize(['invalidDates' => $dateDisabledArray ,
-            'jccDate' => $dateJcc ],'json',['groups' => 'read' , 'enable_max_depth' => true]);
+        $jsonContent = $Normalizer->normalize(['msg' => "publicité modifié"]);
         $retour=json_encode($jsonContent);
         return new Response($retour);
     }
@@ -193,7 +173,8 @@ return new Response("Publicité ajouté");
     /**
      * @Route("/api/publicite//DelPub/{id}", name="DelPub")
      */
-    public function DELPub ($id,Request $request )
+    public function DELPub ($id,Request $request
+        ,  NormalizerInterface $Normalizer)
     {
         $Publicite=$this->getDoctrine()
         ->getRepository(Publicite::class)
@@ -201,76 +182,28 @@ return new Response("Publicité ajouté");
         $em=$this->getDoctrine()->getManager();
         $em->remove($Publicite);
         $em ->flush();
-        return new Response('publicité supprimé');
-    }
-
-
-    /**
-     * @Route("/affc", name="affc")
-     */
-    public function affc(EntityManagerInterface $em
-    , \Swift_Mailer $mailer
-    , PubliciteRepository $rep
-    , Request $request
-    ): Response //Request de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
-    {
-        $result=$em->createQuery("Select * from publicite ");
-        $dp=new Publicite();
-        //$dp=$rep->find($id);
-        $form=$this->createForm(UpdateType::class,$dp);
-        $form->handleRequest($request);
-        if($form ->isSubmitted()){
-            $em ->persist($dp);
-            $em ->flush();
-            return $this->redirectToRoute('affichagePub');
-        }
-        $list=$rep->findAll();
-        return $this->render('pub/UpdatePub.html.twig', [
-            'f' => $form->createView(),
-        ]);
-    }
-
-
-    // fonction qui nous donne le calendrier : exemple na3teha 01/02/2021 w 03/02/2021 traja3li ['01/02/2021' , '02/02/2021' , '03/02/2021' ]
-    private function createDateRangeArray($strDateFrom,$strDateTo)
-    {
-        // takes two dates formatted as YYYY-MM-DD and creates an
-        // inclusive array of the dates between the from and to dates.
-
-        // could test validity of dates here but I'm already doing
-        // that in the main script
-
-        $aryRange = [];
-
-        $iDateFrom = mktime(1, 0, 0, substr($strDateFrom, 5, 2), substr($strDateFrom, 8, 2), substr($strDateFrom, 0, 4));
-        $iDateTo = mktime(1, 0, 0, substr($strDateTo, 5, 2), substr($strDateTo, 8, 2), substr($strDateTo, 0, 4));
-
-        if ($iDateTo >= $iDateFrom) {
-            array_push($aryRange, date('Y-m-d', $iDateFrom)); // first entry
-            while ($iDateFrom<$iDateTo) {
-                $iDateFrom += 86400; // add 24 hours
-                array_push($aryRange, date('Y-m-d', $iDateFrom));
-            }
-        }
-        return $aryRange;
+        $jsonContent = $Normalizer->normalize(['msg' => "publicité suprimé"]);
+        $retour=json_encode($jsonContent);
+        return new Response($retour);
     }
 
     /**
      * @Route("/api/publicite//ConfirmerPub/{id}", name="ConfirmerPub")
      */
     public function ConfirmerPub (PubliciteRepository $rep,$id,Request $request ,
-          \Swift_Mailer $mailer ,
-
+                                  \Swift_Mailer $mailer ,
+                                  NormalizerInterface $Normalizer,
                                   AdminRepository $adminRepository,
-                                 EntityManagerInterface $em): Response //Request de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
+                                  EntityManagerInterface $em): Response //Request de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
     {
+        $data = json_decode($request->getContent(), true);
+
         $dp=new Publicite();
         $dp=$rep->find($id);
         $dp->setEtat('confirmed') ;
-        $dp->setIdAdmin($adminRepository->findAll()[0]); // get connceted user but it's static now
+        empty($data['idAdmin']) ? true : $dp->setIdAdmin($adminRepository->find($data['idAdmin']));
         $em ->persist($dp);
         $em ->flush();
-
 
         $message = (new \Swift_Message('Demande de Pub Accepter'))
             ->setFrom('serviceclient619@gmail.com')
@@ -280,9 +213,9 @@ return new Response("Publicité ajouté");
 
         $mailer->send($message);
 
-
-        return new Response("Confirmed");
-
+        $jsonContent = $Normalizer->normalize(['msg' => "publicité confirmé"]);
+        $retour=json_encode($jsonContent);
+        return new Response($retour);
     }
 
 
@@ -290,30 +223,41 @@ return new Response("Publicité ajouté");
      * @Route("/api/publicite/AnnulerPub/{id}", name="AnnulerPub")
      */
     public function AnnulerPub (PubliciteRepository $rep,$id,Request $request ,
-                                 AdminRepository $adminRepository,
+                                NormalizerInterface $Normalizer,
+                                AdminRepository $adminRepository,
                                  EntityManagerInterface $em): Response //Request de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
     {
+        $data = json_decode($request->getContent(), true);
+
         $dp=new Publicite();
         $dp=$rep->find($id);
-
         $dp->setEtat('canceled') ;
-        $dp->setIdAdmin($adminRepository->findAll()[0]); // get connceted user but it's static now
+
+        empty($data['idAdmin']) ? true : $dp->setIdAdmin($adminRepository->find($data['idAdmin']));
+
         $em ->persist($dp);
         $em ->flush();
-
-        return new Response("Canceled");
+        $jsonContent = $Normalizer->normalize(['msg' => "publicité annulé"]);
+        $retour=json_encode($jsonContent);
+        return new Response($retour);
 
     }
     
     /**
      * @Route("/api/publicite/affichagePubCinema", name="affichagePubCinema")
      */
-    public function affichageCinemaPub(PubliciteRepository $rep
+    public function affichageCinemaPub( Request $request , PubliciteRepository $rep
         ,  \Swift_Mailer $mailer
         , CinemaRepository $cinemaRepository , EntityManagerInterface $em): Response
     {
+
+        $data = json_decode($request->getContent(), true);
+
+        $cinema = new Cinema();
+        empty($data['idCinema']) ? true : $cinema = $cinemaRepository->find($data['idCinema']);
+
         // $user = $this->get('security.token_storage')->getToken()->getUser(); // get connected user
-        $list=$rep->findBy(['id_cinema' => $cinemaRepository->findAll()[1]]); // get connected user but it's statique
+        $list=$rep->findBy(['id_cinema' => $cinema]); // get connected user but it's statique
         $dateToNotify = new \DateTime() ;
 
         // boucle sur tt les publicite kén l9a wa7da date mté3ha wfét i7otélha el etat expiré
@@ -344,7 +288,31 @@ return new Response("Publicité ajouté");
         $jsonContent = $Normalizer->normalize($list,'json',['groups' => 'read' , 'enable_max_depth' => true]);
         $retour=json_encode($jsonContent);
         return new Response($retour);
-
-
     }
+
+
+    // fonction qui nous donne le calendrier : exemple na3teha 01/02/2021 w 03/02/2021 traja3li ['01/02/2021' , '02/02/2021' , '03/02/2021' ]
+    private function createDateRangeArray($strDateFrom,$strDateTo)
+    {
+        // takes two dates formatted as YYYY-MM-DD and creates an
+        // inclusive array of the dates between the from and to dates.
+
+        // could test validity of dates here but I'm already doing
+        // that in the main script
+
+        $aryRange = [];
+
+        $iDateFrom = mktime(1, 0, 0, substr($strDateFrom, 5, 2), substr($strDateFrom, 8, 2), substr($strDateFrom, 0, 4));
+        $iDateTo = mktime(1, 0, 0, substr($strDateTo, 5, 2), substr($strDateTo, 8, 2), substr($strDateTo, 0, 4));
+
+        if ($iDateTo >= $iDateFrom) {
+            array_push($aryRange, date('Y-m-d', $iDateFrom)); // first entry
+            while ($iDateFrom<$iDateTo) {
+                $iDateFrom += 86400; // add 24 hours
+                array_push($aryRange, date('Y-m-d', $iDateFrom));
+            }
+        }
+        return $aryRange;
+    }
+
 }
