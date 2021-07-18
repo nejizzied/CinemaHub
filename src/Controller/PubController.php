@@ -20,18 +20,6 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 
 class PubController extends AbstractController
 {
-    /**
-     * @Route("/api/pub", name="pub")
-     */
-    public function index(PubliciteRepository $publiciteRepository ,
-       NormalizerInterface $Normalizer
-    ): Response
-    {
-        $pub = $publiciteRepository->getCurrentPub();
-        $jsonContent = $Normalizer->normalize($pub, 'json',['groups' => 'read' , 'enable_max_depth' => true]);
-        $retour=json_encode($jsonContent);
-        return new Response($retour);
-    }
 
     /**
      * @Route("/api/AjoutPub", name="AjoutPub" , methods= {"post"})
@@ -46,10 +34,12 @@ class PubController extends AbstractController
     {
         $dp=new Publicite();
         $data = json_decode($request->getContent(), true);
+
         empty($data['prix']) ? true : $dp->setPrix($data['prix']);
         empty($data['idCinema']) ? true : $dp->setIdCinema($cinemaRepository->find($data['idCinema']));
         empty($data['date']) ? true : $dp->setDate( new \DateTime($data['date']));
         empty($data['dateFin']) ? true : $dp->setDateFin(new \DateTime($data['dateFin']));
+
         $dp->setEtat('en cours de traitement');
         $em ->persist($dp);
         $em ->flush();
