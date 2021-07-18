@@ -90,7 +90,7 @@ class Publicite
 
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
-     * @Groups({"write" , "read"})
+     * @Groups({"write" , "read" , "other"})
      */
     private $etat;
 

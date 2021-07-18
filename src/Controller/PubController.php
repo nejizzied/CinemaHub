@@ -312,6 +312,20 @@ class PubController extends AbstractController
     }
 
 
+    /**
+     * @Route("/api/afficherPubs", name="affichager_pubs" )
+     */
+    public function getPendingPubs( Request $request
+        , PubliciteRepository $rep
+        , NormalizerInterface $Normalizer) : Response
+    {
+        $list = $rep->getPendingConfirmedPub();
+        $jsonContent = $Normalizer->normalize($list,'json',['groups' => ['read' , 'other'] , 'enable_max_depth' => true]);
+        $retour=json_encode($jsonContent);
+        return new Response($retour);
+    }
+
+
     // fonction qui nous donne le calendrier : exemple na3teha 01/02/2021 w 03/02/2021 traja3li ['01/02/2021' , '02/02/2021' , '03/02/2021' ]
     private function createDateRangeArray($strDateFrom,$strDateTo)
     {

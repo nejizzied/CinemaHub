@@ -89,7 +89,7 @@ class PubliciteRepository extends ServiceEntityRepository
         return $pubs != null ? $pubs[0] : null;
     }
 
-    public function getCurrentPub() : ?Publicite
+    public function getPendingConfirmedPub()
     {
         $pubs = $this->createQueryBuilder('p')
             ->andWhere('p.etat = :val')
@@ -101,7 +101,7 @@ class PubliciteRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
-        return $pubs != null ? $pubs[0] : null;
+        return $pubs ;
     }
 
 
