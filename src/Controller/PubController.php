@@ -22,7 +22,7 @@ class PubController extends AbstractController
 {
 
     /**
-     * @Route("/api/AjoutPub", name="AjoutPub" , methods= {"post"})
+     * @Route("/api/ajouterPub", name="AjoutPub" , methods= {"post"})
      */
     public function AjoutPub(Request $request,
                              PubliciteRepository $publiciteRepository
@@ -89,7 +89,7 @@ class PubController extends AbstractController
     }
 
     /**
-     * @Route("/api/ProlongerPub/{id}", name="ProlongerPub" , methods = {"post"})
+     * @Route("/api/prolongerPub/{id}", name="prolongerPub" , methods = {"post"})
      */
     public function ProlongerPub (PubliciteRepository $rep,$id,Request $request , EntityManagerInterface $em
     ,  \Swift_Mailer $mailer
@@ -109,7 +109,7 @@ class PubController extends AbstractController
         // definition intervale mta3 ayamet el jcc
         $d1 = new \DateTime('2022-01-01') ; // debut jcc
         $d2 = new \DateTime('2022-01-07') ; // fin jcc
-        $dateJcc = $this->createDateRangeArray( $d1->format('Y-m-d') ,$d2->format('Y-m-d'));
+        $dateJeDcc = $this->createDateRangeArray( $d1->format('Y-m-d') ,$d2->format('Y-m-d'));
         $dateRanges = $this->createDateRangeArray($dp->getDate()->format('Y-m-d') , $dp->getDateFin()->format('Y-m-d'));
         $prix = 0 ;
 
@@ -144,7 +144,7 @@ class PubController extends AbstractController
 
 
     /**
-     * @Route("/api/DelPub/{id}", name="DelPub" , methods={"delete"})
+     * @Route("/api/supprimerPub/{id}", name="DelPub" , methods={"delete"})
      */
     public function DELPub ($id,Request $request
         ,  NormalizerInterface $Normalizer)
@@ -161,7 +161,7 @@ class PubController extends AbstractController
     }
 
     /**
-     * @Route("/api/ConfirmerPub/{id}", name="ConfirmerPub")
+     * @Route("/api/confirmerPub/{id}", name="confirmerPub")
      */
     public function ConfirmerPub (PubliciteRepository $rep,$id,Request $request ,
                                   \Swift_Mailer $mailer ,
@@ -193,7 +193,7 @@ class PubController extends AbstractController
 
 
     /**
-     * @Route("/api/AnnulerPub/{id}", name="AnnulerPub")
+     * @Route("/api/annulerPub/{id}", name="annulerPub")
      */
     public function AnnulerPub (PubliciteRepository $rep,$id,Request $request ,
                                 NormalizerInterface $Normalizer,
