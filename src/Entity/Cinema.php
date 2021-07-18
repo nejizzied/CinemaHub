@@ -50,7 +50,7 @@ class Cinema
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write" , "read" ,"other})
+     * @Groups({"write" , "read" ,"other"})
      */
     private $nomCinema;
 
