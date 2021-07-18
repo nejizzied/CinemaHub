@@ -155,7 +155,7 @@ class PubController extends AbstractController
         // definition intervale mta3 ayamet el jcc
         $d1 = new \DateTime('2022-01-01') ; // debut jcc
         $d2 = new \DateTime('2022-01-07') ; // fin jcc
-        $dateJeDcc = $this->createDateRangeArray( $d1->format('Y-m-d') ,$d2->format('Y-m-d'));
+        $dateJcc = $this->createDateRangeArray( $d1->format('Y-m-d') ,$d2->format('Y-m-d'));
         $dateRanges = $this->createDateRangeArray($dp->getDate()->format('Y-m-d') , $dp->getDateFin()->format('Y-m-d'));
         $prix = 0 ;
 
