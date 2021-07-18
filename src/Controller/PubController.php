@@ -188,7 +188,8 @@ class PubController extends AbstractController
      */
     public function affichageCinemaPub( Request $request , $id, PubliciteRepository $rep
         ,  \Swift_Mailer $mailer
-        , CinemaRepository $cinemaRepository , EntityManagerInterface $em): Response
+        , CinemaRepository $cinemaRepository ,
+                                        EntityManagerInterface $em ,  NormalizerInterface $Normalizer) : Response
     {
 
         $data = json_decode($request->getContent(), true);
@@ -196,8 +197,7 @@ class PubController extends AbstractController
         $cinema = new Cinema();
         empty($data['idCinema']) ? true : $cinema = $cinemaRepository->find($id);
 
-        // $user = $this->get('security.token_storage')->getToken()->getUser(); // get connected user
-        $list=$rep->findBy(['id_cinema' => $cinema]); // get connected user but it's statique
+        $list=$rep->findBy(['idCinema' => $cinema]);
         $dateToNotify = new \DateTime() ;
 
         // boucle sur tt les publicite kén l9a wa7da date mté3ha wfét i7otélha el etat expiré
