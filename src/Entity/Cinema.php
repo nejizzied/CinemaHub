@@ -44,44 +44,44 @@ class Cinema
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups("read")
+     * @Groups("read" , "other")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write" , "read"})
+     * @Groups({"write" , "read" ,"other})
      */
     private $nomCinema;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write" , "read"})
+     * @Groups({"write" , "read" , "other"})
      */
     private $adresse;
 
     /**
      * @ORM\Column(type="string")
-     * @Groups({"write" , "read"})
+     * @Groups({"write" , "read" , "other"})
      */
     private $numTel;
 
     /**
      * @ORM\Column(type="string", length=255 , unique=true)
-     * @Groups({"write" , "read"})
+     * @Groups({"write" , "read" , "other"})
      * @Assert\Email
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write" })
+     * @Groups({"write" , "other"})
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({ "read"})
+     * @Groups({ "read" , "other"})
      */
     private $image;
 
