@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0e684124-4490-4507-baaf-6f3ae6ee37e1" name="Default Changelist" comment="pucblicité apis">
+    <list default="true" id="0e684124-4490-4507-baaf-6f3ae6ee37e1" name="Default Changelist" comment="getPendingPubs">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -214,7 +215,7 @@
       <workItem from="1626132403679" duration="11401000" />
       <workItem from="1626348117035" duration="11774000" />
       <workItem from="1626443189296" duration="30243000" />
-      <workItem from="1626643798260" duration="4180000" />
+      <workItem from="1626643798260" duration="6707000" />
     </task>
     <task id="LOCAL-00001" summary="publicite groups + adding reservation controller">
       <created>1626352962493</created>
@@ -398,7 +399,49 @@
       <option name="project" value="LOCAL" />
       <updated>1626647956143</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="pucblicité apis">
+      <created>1626648035896</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1626648035896</updated>
+    </task>
+    <task id="LOCAL-00028" summary="pucblicité apis">
+      <created>1626648337744</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1626648337744</updated>
+    </task>
+    <task id="LOCAL-00029" summary="pucblicité apis">
+      <created>1626649224486</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1626649224486</updated>
+    </task>
+    <task id="LOCAL-00030" summary="pucblicité apis">
+      <created>1626649566982</created>
+      <option name="number" value="00030" />
+      <option name="presentableId" value="LOCAL-00030" />
+      <option name="project" value="LOCAL" />
+      <updated>1626649566982</updated>
+    </task>
+    <task id="LOCAL-00031" summary="pucblicité apis">
+      <created>1626649802133</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1626649802133</updated>
+    </task>
+    <task id="LOCAL-00032" summary="getPendingPubs">
+      <created>1626650500683</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1626650500683</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -426,6 +469,7 @@
     <MESSAGE value="reservation add + anuulé + confirmé" />
     <MESSAGE value="adding status 'complet' to films" />
     <MESSAGE value="pucblicité apis" />
-    <option name="LAST_COMMIT_MESSAGE" value="pucblicité apis" />
+    <MESSAGE value="getPendingPubs" />
+    <option name="LAST_COMMIT_MESSAGE" value="getPendingPubs" />
   </component>
 </project>

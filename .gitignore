@@ -19,6 +19,8 @@
 .phpunit.result.cache
 ###< phpunit/phpunit ###
 
+.idea/workspace.xml
+
 ###> symfony/web-server-bundle ###
 /.web-server-pid
 ###< symfony/web-server-bundle ###
