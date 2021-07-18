@@ -184,7 +184,7 @@ class PubController extends AbstractController
     }
     
     /**
-     * @Route("/api/publicites/affichagePubCinema/{id}", name="affichagePubCinema")
+     * @Route("/api/publicites/cinema/{id}", name="affichagePubCinema")
      */
     public function affichageCinemaPub( Request $request , $id, PubliciteRepository $rep
         ,  \Swift_Mailer $mailer
