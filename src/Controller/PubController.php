@@ -34,71 +34,7 @@ class PubController extends AbstractController
     }
 
     /**
-     * @Route("/api/publicite/AjoutPub", name="AjoutPub" , methods= {"post"})
-     */
-    public function ajouterPub(Request $request,
-        PubliciteRepository $publiciteRepository
-        , EntityManagerInterface $em
-    , \Swift_Mailer $mailer
-    , CinemaRepository $cinemaRepository
-    , NormalizerInterface $Normalizer
-    ): Response //Requestion de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
-    {
-        // get all pub confirmed afin de modifier le calendrier : itha ken date tekhdhét twalli gris fil calendrier
-        $pubs = $publiciteRepository->getPubsByEtat("confirmed");
-
-        if( $publiciteRepository->getLastConfirmedPub() != null
-            && $publiciteRepository->getLastConfirmedPub()->getDateFin() >= new \DateTime() )
-        {
-            // kén famma pub 9bal w el date fin mté3ha fétet lyouma nékhdhou el date fin mté3ha
-            $dateStart =   $publiciteRepository->getLastConfirmedPub()->getDateFin() ;
-        }
-        else
-        {
-            // sinon nékhdhou date lyouma kén mafamech pub 9dima jémla
-            $dateStart = new \DateTime() ;
-        }
-
-        $dateStart->modify("1 day"); // nzidou nhar
-
-        $maxDate = new \DateTime($dateStart->format('Y-m-d')) ;
-        $maxDate->modify("3 month"); // preciser la date maximale d'une publicite = 3 mois
-
-        // ki yébda 3anna publicité prévu ( jéya )
-        if($publiciteRepository->getFirstConfirmedPendingPub() != null)
-        {
-            // nekhedhou el debut mta3 el pub prévu
-            $dateEnd = $publiciteRepository->getFirstConfirmedPendingPub()->getDate() ;
-        }
-        else
-        {
-            // nekhedhou el date max
-            $dateEnd = $maxDate ;
-        }
-
-        $dateEnd->modify("-1 day"); // lézemna nékhedhou el date debut mta3 el pub prévu -1
-
-        $dateDisabledArray = $this->createDateRangeArray( $dateStart->format('Y-m-d') ,$dateEnd->format('Y-m-d'));
-
-        $d1 = new \DateTime('2021-07-01') ;
-        $d2 = new \DateTime('2021-07-07') ;
-        $dateJcc = $this->createDateRangeArray( $d1->format('Y-m-d') ,$d2->format('Y-m-d'));
-
-        $pub= new Publicite();
-        // $user = $this->get('security.token_storage')->getToken()->getUser(); // get connected user
-        $pub->setIdCinema($cinemaRepository->findAll()[1]); // get connected user but it's statique
-
-        $form=$this->createForm(PublType::class,$pub);
-        $form->handleRequest($request);
-
-        $jsonContent = $Normalizer->normalize([ 'form' => $form , 'dateDisableArray' => $dateDisabledArray , 'dateJcc' =>$dateJcc ]  , 'json',['groups' => 'read' , 'enable_max_depth' => true]);
-        $retour=json_encode($jsonContent);
-        return new Response($retour);
-
-    }
-
-    /**
-     * @Route("/api/publicite/AjoutPub", name="AjoutPub" , methods= {"post"})
+     * @Route("/api/publicites/AjoutPub", name="AjoutPub" , methods= {"post"})
      */
     public function AjoutPub(Request $request,
                              PubliciteRepository $publiciteRepository
@@ -108,26 +44,30 @@ class PubController extends AbstractController
         , NormalizerInterface $Normalizer
     ): Response //Requestion de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
     {
-/*
-        $pub->setEtat("Demande en cours de traitement");
-        $em ->persist($pub);
+        $dp=new Publicite();
+        $data = json_decode($request->getContent(), true);
+        empty($data['prix']) ? true : $dp->setPrix($data['prix']);
+        empty($data['idCinema']) ? true : $dp->setIdCinema($cinemaRepository->find($data['idCinema']));
+        empty($data['date']) ? true : $dp->setDate($data['date']);
+        empty($data['dateFin']) ? true : $dp->setDateFin($data['dateFin']);
+        $dp->setEtat('en cours de traitement');
+        $em ->persist($dp);
         $em ->flush();
-*/
-    #PARTIE MAIL user ya3ml demande admin ijih mail
-    $message = (new \Swift_Message('Demande de Pub'))
-    ->setFrom('labpiesprit@gmail.com')
-    ->setTo('labpiesprit@gmail.com')
-    ->setBody('Le Cinéma a demandé une pub à la date merci de répondre a cette demande rapidement !');
-    $mailer->send($message);
+        $message = (new \Swift_Message('Demande de pub'))
+            ->setFrom('serviceclient619@gmail.com')
+            ->setTo('serviceclient619@gmail.com')
+            ->setBody('Le Cinéma '.$dp->getIdCinema()->getNomCinema().'a demandé une une pub merci de répondre a cette demande rapidement !')
+        ;
 
+        $mailer->send($message);
+        $jsonContent = $Normalizer->normalize(['msg' => "Demande envoyé"]);
+        $retour=json_encode($jsonContent);
+        return new Response($retour);
 
-
-    return new Response("Publicité ajouté");
-
-    }
+    }                                                     
 
     /**
-     * @Route("/api/publicite/affichagePub", name="affichagePub")
+     * @Route("/api/publicites/affichagePub", name="affichagePub")
      */
     public function afficherPub(PubliciteRepository $rep , NormalizerInterface $Normalizer ): Response
     {
@@ -138,7 +78,7 @@ class PubController extends AbstractController
     }
 
     /**
-     * @Route("/api/publicite/ProlongerPub/{id}", name="ProlongerPub" , methods = {"post"})
+     * @Route("/api/publicites/ProlongerPub/{id}", name="ProlongerPub" , methods = {"post"})
      */
     public function ProlongerPub (PubliciteRepository $rep,$id,Request $request , EntityManagerInterface $em
     ,  \Swift_Mailer $mailer
@@ -171,7 +111,7 @@ class PubController extends AbstractController
 
 
     /**
-     * @Route("/api/publicite//DelPub/{id}", name="DelPub")
+     * @Route("/api/publicites//DelPub/{id}", name="DelPub")
      */
     public function DELPub ($id,Request $request
         ,  NormalizerInterface $Normalizer)
@@ -188,7 +128,7 @@ class PubController extends AbstractController
     }
 
     /**
-     * @Route("/api/publicite//ConfirmerPub/{id}", name="ConfirmerPub")
+     * @Route("/api/publicites//ConfirmerPub/{id}", name="ConfirmerPub")
      */
     public function ConfirmerPub (PubliciteRepository $rep,$id,Request $request ,
                                   \Swift_Mailer $mailer ,
@@ -220,7 +160,7 @@ class PubController extends AbstractController
 
 
     /**
-     * @Route("/api/publicite/AnnulerPub/{id}", name="AnnulerPub")
+     * @Route("/api/publicites/AnnulerPub/{id}", name="AnnulerPub")
      */
     public function AnnulerPub (PubliciteRepository $rep,$id,Request $request ,
                                 NormalizerInterface $Normalizer,
@@ -244,7 +184,7 @@ class PubController extends AbstractController
     }
     
     /**
-     * @Route("/api/publicite/affichagePubCinema", name="affichagePubCinema")
+     * @Route("/api/publicites/affichagePubCinema", name="affichagePubCinema")
      */
     public function affichageCinemaPub( Request $request , PubliciteRepository $rep
         ,  \Swift_Mailer $mailer
