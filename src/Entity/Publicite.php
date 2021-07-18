@@ -69,7 +69,7 @@ class Publicite
     /**
      * @ORM\ManyToOne(targetEntity=Cinema::class, inversedBy="publicites")
      * @ORM\JoinColumn(nullable=false)
-     * @Groups({"write" })
+     * @Groups({"write" , "other"})
      */
     private $idCinema;
 
