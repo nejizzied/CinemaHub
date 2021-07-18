@@ -21,7 +21,7 @@ use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 class PubController extends AbstractController
 {
     /**
-     * @Route("/api/publicite/pub", name="pub")
+     * @Route("/api/pub", name="pub")
      */
     public function index(PubliciteRepository $publiciteRepository ,
        NormalizerInterface $Normalizer
@@ -34,7 +34,7 @@ class PubController extends AbstractController
     }
 
     /**
-     * @Route("/api/publicites/AjoutPub", name="AjoutPub" , methods= {"post"})
+     * @Route("/api/AjoutPub", name="AjoutPub" , methods= {"post"})
      */
     public function AjoutPub(Request $request,
                              PubliciteRepository $publiciteRepository
@@ -67,7 +67,7 @@ class PubController extends AbstractController
     }                                                     
 
     /**
-     * @Route("/api/publicites/affichagePub", name="affichagePub")
+     * @Route("/api/affichagePub", name="affichagePub")
      */
     public function afficherPub(PubliciteRepository $rep , NormalizerInterface $Normalizer ): Response
     {
@@ -78,7 +78,7 @@ class PubController extends AbstractController
     }
 
     /**
-     * @Route("/api/publicites/ProlongerPub/{id}", name="ProlongerPub" , methods = {"post"})
+     * @Route("/api/ProlongerPub/{id}", name="ProlongerPub" , methods = {"post"})
      */
     public function ProlongerPub (PubliciteRepository $rep,$id,Request $request , EntityManagerInterface $em
     ,  \Swift_Mailer $mailer
@@ -111,7 +111,7 @@ class PubController extends AbstractController
 
 
     /**
-     * @Route("/api/publicites//DelPub/{id}", name="DelPub")
+     * @Route("/api/DelPub/{id}", name="DelPub")
      */
     public function DELPub ($id,Request $request
         ,  NormalizerInterface $Normalizer)
@@ -128,7 +128,7 @@ class PubController extends AbstractController
     }
 
     /**
-     * @Route("/api/publicites/ConfirmerPub/{id}", name="ConfirmerPub")
+     * @Route("/api/ConfirmerPub/{id}", name="ConfirmerPub")
      */
     public function ConfirmerPub (PubliciteRepository $rep,$id,Request $request ,
                                   \Swift_Mailer $mailer ,
@@ -160,7 +160,7 @@ class PubController extends AbstractController
 
 
     /**
-     * @Route("/api/publicites/AnnulerPub/{id}", name="AnnulerPub")
+     * @Route("/api/AnnulerPub/{id}", name="AnnulerPub")
      */
     public function AnnulerPub (PubliciteRepository $rep,$id,Request $request ,
                                 NormalizerInterface $Normalizer,
