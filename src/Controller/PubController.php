@@ -48,8 +48,8 @@ class PubController extends AbstractController
         $data = json_decode($request->getContent(), true);
         empty($data['prix']) ? true : $dp->setPrix($data['prix']);
         empty($data['idCinema']) ? true : $dp->setIdCinema($cinemaRepository->find($data['idCinema']));
-        empty($data['date']) ? true : $dp->setDate($data['date']);
-        empty($data['dateFin']) ? true : $dp->setDateFin($data['dateFin']);
+        empty($data['date']) ? true : $dp->setDate( new \DateTime($data['date']));
+        empty($data['dateFin']) ? true : $dp->setDateFin(new \DateTime($data['dateFin']));
         $dp->setEtat('en cours de traitement');
         $em ->persist($dp);
         $em ->flush();
