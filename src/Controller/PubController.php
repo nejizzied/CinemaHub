@@ -313,7 +313,7 @@ class PubController extends AbstractController
 
 
     /**
-     * @Route("/api/afficherPubs", name="affichager_pubs" )
+     * @Route("/api/afficherPub", name="affichager_pubs" )
      */
     public function getPendingPubs( Request $request
         , PubliciteRepository $rep

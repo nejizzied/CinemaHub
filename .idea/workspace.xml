@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="0e684124-4490-4507-baaf-6f3ae6ee37e1" name="Default Changelist" comment="getPendingPubs">
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Controller/PubController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PubController.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -215,7 +215,7 @@
       <workItem from="1626132403679" duration="11401000" />
       <workItem from="1626348117035" duration="11774000" />
       <workItem from="1626443189296" duration="30243000" />
-      <workItem from="1626643798260" duration="6707000" />
+      <workItem from="1626643798260" duration="7337000" />
     </task>
     <task id="LOCAL-00001" summary="publicite groups + adding reservation controller">
       <created>1626352962493</created>
@@ -441,7 +441,14 @@
       <option name="project" value="LOCAL" />
       <updated>1626650500683</updated>
     </task>
-    <option name="localTasksCounter" value="33" />
+    <task id="LOCAL-00033" summary="getPendingPubs">
+      <created>1626650558771</created>
+      <option name="number" value="00033" />
+      <option name="presentableId" value="LOCAL-00033" />
+      <option name="project" value="LOCAL" />
+      <updated>1626650558771</updated>
+    </task>
+    <option name="localTasksCounter" value="34" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
