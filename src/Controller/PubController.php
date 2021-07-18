@@ -38,7 +38,7 @@ class PubController extends AbstractController
 
         empty($data['idCinema']) ? true : $dp->setIdCinema($cinemaRepository->find($data['idCinema']));
         empty($data['date']) ? true : $dp->setDate( new \DateTime($data['date']));
-        empty($data['dateFin']) ? true : $dp->setDateFin(new \DateTime($data['dateFin']));
+        empty($data['datefin']) ? true : $dp->setDateFin(new \DateTime($data['datefin']));
 
         // calcul prix
         // definition intervale mta3 ayamet el jcc
@@ -75,7 +75,49 @@ class PubController extends AbstractController
         $retour=json_encode($jsonContent);
         return new Response($retour);
 
-    }                                                     
+    }
+
+    /**
+     * @Route("/api/calculerPrixPub", name="caluclerPrixPub" , methods= {"post"})
+     */
+    public function caclulerPub(Request $request,
+                             PubliciteRepository $publiciteRepository
+        , EntityManagerInterface $em
+        , \Swift_Mailer $mailer
+        , CinemaRepository $cinemaRepository
+        , NormalizerInterface $Normalizer
+    ): Response //Requestion de HTTP FONDATION , CTRL+ESPACE afin d'autocomplet
+    {
+
+        empty($data['date']) ? true : $dp->setDate( new \DateTime($data['date']));
+        empty($data['datefin']) ? true : $dp->setDateFin(new \DateTime($data['datefin']));
+
+        // calcul prix
+        // definition intervale mta3 ayamet el jcc
+        $d1 = new \DateTime('2022-01-01') ; // debut jcc
+        $d2 = new \DateTime('2022-01-07') ; // fin jcc
+        $dateJcc = $this->createDateRangeArray( $d1->format('Y-m-d') ,$d2->format('Y-m-d'));
+        $dateRanges = $this->createDateRangeArray($dp->getDate()->format('Y-m-d') , $dp->getDateFin()->format('Y-m-d'));
+        $prix = 0 ;
+
+        foreach  ( $dateRanges as $md)
+        {
+            if(in_array($md , $dateJcc) )
+            {
+                $prix += 100 ;
+            }
+            else{
+                $prix += 50 ;
+            }
+        }
+
+        $jsonContent = $Normalizer->normalize(['msg' => "Prix calculer" , 'prix' => $prix ]);
+        $retour=json_encode($jsonContent);
+        return new Response($retour);
+
+    }
+
+
 
     /**
      * @Route("/api/affichagePub", name="affichagePub")
