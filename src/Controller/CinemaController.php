@@ -66,7 +66,7 @@ class CinemaController extends AbstractController
         CinemaRepository $cinemaRepository,
         AdminRepository$adminRepository,
         EvaluationRepository $evaluationRepository,
-
+        HttpClientInterface $client
     ): Response
     {
 
