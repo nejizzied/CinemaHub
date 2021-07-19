@@ -47,7 +47,7 @@ class StatistiqueController extends AbstractController
         $nbrResAnnulé = sizeof($reservationRepository->findBy(['status' => 'annulé']));
         $nbrResEnAttente = sizeof($reservationRepository->findBy(['status' => 'en attente de confirmation']));
 
-         $jsonContent = $Normalizer->normalize(['confirmé' => $nbrResConfirmé , 'annulé' => $nbrResAnnulé , 'en attente' => $nbrResEnAttente], 'json',['groups' => 'read' , 'enable_max_depth' => true]);
+         $jsonContent = $Normalizer->normalize(['confirme' => $nbrResConfirmé , 'annule' => $nbrResAnnulé , 'enAttente' => $nbrResEnAttente], 'json',['groups' => 'read' , 'enable_max_depth' => true]);
          $retour=json_encode($jsonContent);
         return new Response($retour);
     }
