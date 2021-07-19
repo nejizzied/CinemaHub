@@ -58,7 +58,7 @@ class CinemaController extends AbstractController
     }
 
     /**
-     * @Route("/api/cinema/map/", name="getMapListCinema")
+     * @Route("/api/cinemas/map/", name="getMapListCinema")
      */
     public function getMapListCinema(
         UserRepository $userRepository ,
