@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="0e684124-4490-4507-baaf-6f3ae6ee37e1" name="Default Changelist" comment="getPendingPubs">
+    <list default="true" id="0e684124-4490-4507-baaf-6f3ae6ee37e1" name="Default Changelist" comment="maps for cinema lat and lang">
+      <change afterPath="$PROJECT_DIR$/src/Controller/CommentaireController.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Controller/PubController.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Controller/PubController.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Film.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Film.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Entity/Publicite.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Entity/Publicite.php" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -215,7 +217,8 @@
       <workItem from="1626132403679" duration="11401000" />
       <workItem from="1626348117035" duration="11774000" />
       <workItem from="1626443189296" duration="30243000" />
-      <workItem from="1626643798260" duration="7337000" />
+      <workItem from="1626643798260" duration="14657000" />
+      <workItem from="1626690900557" duration="4961000" />
     </task>
     <task id="LOCAL-00001" summary="publicite groups + adding reservation controller">
       <created>1626352962493</created>
@@ -448,7 +451,91 @@
       <option name="project" value="LOCAL" />
       <updated>1626650558771</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="getPendingPubs">
+      <created>1626651927919</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1626651927919</updated>
+    </task>
+    <task id="LOCAL-00035" summary="getPendingPubs">
+      <created>1626652311864</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1626652311864</updated>
+    </task>
+    <task id="LOCAL-00036" summary="getPendingPubs">
+      <created>1626652420554</created>
+      <option name="number" value="00036" />
+      <option name="presentableId" value="LOCAL-00036" />
+      <option name="project" value="LOCAL" />
+      <updated>1626652420554</updated>
+    </task>
+    <task id="LOCAL-00037" summary="getPendingPubs">
+      <created>1626652496094</created>
+      <option name="number" value="00037" />
+      <option name="presentableId" value="LOCAL-00037" />
+      <option name="project" value="LOCAL" />
+      <updated>1626652496094</updated>
+    </task>
+    <task id="LOCAL-00038" summary="maps for cinema lat and lang">
+      <created>1626654475412</created>
+      <option name="number" value="00038" />
+      <option name="presentableId" value="LOCAL-00038" />
+      <option name="project" value="LOCAL" />
+      <updated>1626654475412</updated>
+    </task>
+    <task id="LOCAL-00039" summary="maps for cinema lat and lang">
+      <created>1626654576412</created>
+      <option name="number" value="00039" />
+      <option name="presentableId" value="LOCAL-00039" />
+      <option name="project" value="LOCAL" />
+      <updated>1626654576412</updated>
+    </task>
+    <task id="LOCAL-00040" summary="maps for cinema lat and lang">
+      <created>1626655457395</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1626655457395</updated>
+    </task>
+    <task id="LOCAL-00041" summary="maps for cinema lat and lang">
+      <created>1626655805696</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1626655805696</updated>
+    </task>
+    <task id="LOCAL-00042" summary="maps for cinema lat and lang">
+      <created>1626657074548</created>
+      <option name="number" value="00042" />
+      <option name="presentableId" value="LOCAL-00042" />
+      <option name="project" value="LOCAL" />
+      <updated>1626657074548</updated>
+    </task>
+    <task id="LOCAL-00043" summary="maps for cinema lat and lang">
+      <created>1626658628927</created>
+      <option name="number" value="00043" />
+      <option name="presentableId" value="LOCAL-00043" />
+      <option name="project" value="LOCAL" />
+      <updated>1626658628927</updated>
+    </task>
+    <task id="LOCAL-00044" summary="maps for cinema lat and lang">
+      <created>1626659001732</created>
+      <option name="number" value="00044" />
+      <option name="presentableId" value="LOCAL-00044" />
+      <option name="project" value="LOCAL" />
+      <updated>1626659001732</updated>
+    </task>
+    <task id="LOCAL-00045" summary="maps for cinema lat and lang">
+      <created>1626692941291</created>
+      <option name="number" value="00045" />
+      <option name="presentableId" value="LOCAL-00045" />
+      <option name="project" value="LOCAL" />
+      <updated>1626692941291</updated>
+    </task>
+    <option name="localTasksCounter" value="46" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -477,6 +564,7 @@
     <MESSAGE value="adding status 'complet' to films" />
     <MESSAGE value="pucblicité apis" />
     <MESSAGE value="getPendingPubs" />
-    <option name="LAST_COMMIT_MESSAGE" value="getPendingPubs" />
+    <MESSAGE value="maps for cinema lat and lang" />
+    <option name="LAST_COMMIT_MESSAGE" value="maps for cinema lat and lang" />
   </component>
 </project>
