@@ -44,13 +44,13 @@ class Cinema
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
-     * @Groups("read" , "other")
+     * @Groups("read" , "other" , "map")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Groups({"write" , "read" ,"other"})
+     * @Groups({"write" , "read" ,"other" , "map"})
      */
     private $nomCinema;
 
@@ -97,6 +97,18 @@ class Cinema
      *  @Groups ({"other"})
      */
     private $rating ;
+
+    /**
+     *
+     *  @Groups ({"map"})
+     */
+    private $lat ;
+
+    /**
+     *
+     *  @Groups ({"map"})
+     */
+    private $lan ;
 
     /**
      * @ORM\OneToMany(targetEntity=SalleDeProjection::class, mappedBy="idCinema")
@@ -329,4 +341,38 @@ class Cinema
     {
         $this->rating = $rating;
     }
+
+    /**
+     * @return mixed
+     */
+    public function getLat()
+    {
+        return $this->lat;
+    }
+
+    /**
+     * @param mixed $lat
+     */
+    public function setLat($lat): void
+    {
+        $this->lat = $lat;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLan()
+    {
+        return $this->lan;
+    }
+
+    /**
+     * @param mixed $lan
+     */
+    public function setLan($lan): void
+    {
+        $this->lan = $lan;
+    }
+
+
 }
