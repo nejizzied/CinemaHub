@@ -66,12 +66,13 @@ class CinemaController extends AbstractController
         CinemaRepository $cinemaRepository,
         AdminRepository$adminRepository,
         EvaluationRepository $evaluationRepository,
-        HttpClientInterface $client
+
     ): Response
     {
 
         $cinemas = $cinemaRepository->findAll();
         $res = [];
+
         foreach ($cinemas as &$cin)
         {
 
@@ -85,9 +86,6 @@ class CinemaController extends AbstractController
             $statusCode = $response->getStatusCode();
 
             $content = $response->getContent();
-            // $content = '{"id":521583, "name":"symfony-docs", ...}'
-            //$content = $response->toArray();
-            // $content = ['id' => 521583, 'name' => 'symfony-docs', ...]
 
             $content = json_decode($content, true);
             $item = $content["items"][0];
@@ -100,5 +98,27 @@ class CinemaController extends AbstractController
         $jsonContent = $Normalizer->normalize($res, 'json' , ['groups' => ['map'] , 'enable_max_depth' => true]);
         $retour=json_encode($jsonContent);
         return new Response($retour);
+    }
+
+    function distance($lat1, $lon1, $lat2, $lon2, $unit) {
+        if (($lat1 == $lat2) && ($lon1 == $lon2)) {
+            return 0;
+        }
+        else {
+            $theta = $lon1 - $lon2;
+            $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+            $dist = acos($dist);
+            $dist = rad2deg($dist);
+            $miles = $dist * 60 * 1.1515;
+            $unit = strtoupper($unit);
+
+            if ($unit == "K") {
+                return ($miles * 1.609344);
+            } else if ($unit == "N") {
+                return ($miles * 0.8684);
+            } else {
+                return $miles;
+            }
+        }
     }
 }
