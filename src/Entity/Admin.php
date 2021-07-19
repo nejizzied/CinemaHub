@@ -6,9 +6,17 @@ use App\Repository\AdminRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
+ *
  * @ORM\Entity(repositoryClass=AdminRepository::class)
+ *
+ * @ApiResource( normalizationContext={"groups"={"read"}}  ,
+ *  denormalizationContext={"groups"={"write"}} , formats={"json"}
+ * )
  */
 class Admin
 {
@@ -16,33 +24,39 @@ class Admin
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups ({"read" , "write"})
      */
     private $id;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255 , unique=true)
+     * @Assert\Email
+     * @Groups ({"read" , "write"})
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups ({"read" , "write"})
      */
     private $password;
 
     /**
-     * @ORM\OneToMany(targetEntity=Publicite::class, mappedBy="id_admin")
+     * @ORM\OneToMany(targetEntity=Publicite::class, mappedBy="idAdmin")
      */
     private $publicites;
 
     /**
-     * @ORM\OneToMany(targetEntity=Film::class, mappedBy="id_admin")
+     * @ORM\OneToMany(targetEntity=Film::class, mappedBy="idAdmin")
      */
     private $films;
 
+
     /**
-     * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="id_admin")
+     * @ORM\Column(type="string", length=255)
+     *  @Groups ({"read" , "write"})
      */
-    private $commentaires;
+    private $nom;
 
     public function __construct()
     {
@@ -51,6 +65,7 @@ class Admin
         $this->commentaires = new ArrayCollection();
     }
 
+    
     public function getId(): ?int
     {
         return $this->id;
@@ -78,6 +93,11 @@ class Admin
         $this->password = $password;
 
         return $this;
+    }
+
+    public function __toString()
+    {
+        return(String) $this->getNom();
     }
 
     /**
@@ -140,32 +160,14 @@ class Admin
         return $this;
     }
 
-    /**
-     * @return Collection|Commentaire[]
-     */
-    public function getCommentaires(): Collection
+    public function getNom(): ?string
     {
-        return $this->commentaires;
+        return $this->nom;
     }
 
-    public function addCommentaire(Commentaire $commentaire): self
+    public function setNom(string $nom): self
     {
-        if (!$this->commentaires->contains($commentaire)) {
-            $this->commentaires[] = $commentaire;
-            $commentaire->setIdAdmin($this);
-        }
-
-        return $this;
-    }
-
-    public function removeCommentaire(Commentaire $commentaire): self
-    {
-        if ($this->commentaires->removeElement($commentaire)) {
-            // set the owning side to null (unless already changed)
-            if ($commentaire->getIdAdmin() === $this) {
-                $commentaire->setIdAdmin(null);
-            }
-        }
+        $this->nom = $nom;
 
         return $this;
     }

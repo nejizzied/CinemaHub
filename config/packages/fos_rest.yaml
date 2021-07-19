@@ -1,6 +1,5 @@
-fos_rest:
-    body_listener:
-        enabled: true
+# Read the documentation: https://symfony.com/doc/master/bundles/FOSRestBundle/index.html
+#fos_rest:
 #    param_fetcher_listener:  true
 #    allowed_methods_listener:  true
 #    routing_loader: true
@@ -11,7 +10,6 @@ fos_rest:
 #            App\Exception\MyException: 403
 #        messages:
 #            App\Exception\MyException: Forbidden area.
-    format_listener:
-        rules:
-            - { path: ^/api, prefer_extension: true, fallback_format: json, priorities: [ json ] }
-            - { path: '^/', priorities: [ 'html', '*/*'], fallback_format: html, prefer_extension: true }
+#    format_listener:
+#        rules:
+#            - { path: ^/api, prefer_extension: true, fallback_format: json, priorities: [ json, html ] }

@@ -6,9 +6,37 @@ use App\Repository\CinemaRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Validator\Constraints as Assert;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
+ *
  * @ORM\Entity(repositoryClass=CinemaRepository::class)
+ *
+ * @Vich\Uploadable
+ * @ApiResource( normalizationContext={"groups"={"read"}}  ,
+ *  denormalizationContext={"groups"={"write"}} , formats={"json"} ,
+ *        collectionOperations= {
+ *                          "get",
+ *                          "post" = {
+ *                          "input_formats" = {
+ *                               "multipart" = {"multipart/form-data"},
+ *                                  },
+ *                              },
+ *                          },
+ * itemOperations = {
+ *      "get",
+ *      "put",
+ *      "patch",
+ *      "getListCinema" = {
+ *          "route_name" = "getListCinema",
+ *          "normalizationContext" = {"groups" = { "read" ,"other"}},
+ *          },
+ *      }
+ * )
  */
 class Cinema
 {
@@ -16,63 +44,95 @@ class Cinema
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("read" , "other" , "map")
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"write" , "read" ,"other" , "map"})
      */
-    private $nom_cinema;
+    private $nomCinema;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"write" , "read" , "other"})
      */
     private $adresse;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
+     * @Groups({"write" , "read" , "other"})
      */
-    private $num_tel;
+    private $numTel;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255 , unique=true)
+     * @Groups({"write" , "read" , "other"})
+     * @Assert\Email
      */
     private $email;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"write" , "other"})
      */
     private $password;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({ "read" , "other"})
      */
     private $image;
 
     /**
-     * @ORM\OneToMany(targetEntity=SalleDeProjection::class, mappedBy="id_cinema")
+     * @Vich\UploadableField(mapping="photo_de_cinema", fileNameProperty="image")
+     * @var File
+     *  @Groups ({"write"})
+     */
+    private $imageFile;
+
+    /**
+     *
+     *  @Groups ({"other"})
+     */
+    private $rating ;
+
+    /**
+     *
+     *  @Groups ({"map"})
+     */
+    private $lat ;
+
+    /**
+     *
+     *  @Groups ({"map"})
+     */
+    private $lan ;
+
+    /**
+     * @ORM\OneToMany(targetEntity=SalleDeProjection::class, mappedBy="idCinema")
+     * @Groups({ "read"})
+     *
      */
     private $salleDeProjections;
 
     /**
-     * @ORM\OneToMany(targetEntity=Publicite::class, mappedBy="id_cinema")
+     * @ORM\OneToMany(targetEntity=Publicite::class, mappedBy="idCinema")
      */
     private $publicites;
 
     /**
-     * @ORM\Column(type="string", length=50, nullable=true)
+     * @ORM\OneToMany(targetEntity=Evaluation::class, mappedBy="idCinema", orphanRemoval=true)
+     *
      */
-    private $Latitude;
-
-    /**
-     * @ORM\Column(type="string", length=50, nullable=true)
-     */
-    private $Longitude;
+    private $evaluations;
 
     public function __construct()
     {
         $this->salleDeProjections = new ArrayCollection();
         $this->publicites = new ArrayCollection();
+        $this->evaluations = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -82,12 +142,12 @@ class Cinema
 
     public function getNomCinema(): ?string
     {
-        return $this->nom_cinema;
+        return $this->nomCinema;
     }
 
-    public function setNomCinema(string $nom_cinema): self
+    public function setNomCinema(string $nomCinema): self
     {
-        $this->nom_cinema = $nom_cinema;
+        $this->nomCinema = $nomCinema;
 
         return $this;
     }
@@ -104,14 +164,14 @@ class Cinema
         return $this;
     }
 
-    public function getNumTel(): ?int
+    public function getNumTel(): ?string
     {
-        return $this->num_tel;
+        return $this->numTel;
     }
 
-    public function setNumTel(int $num_tel): self
+    public function setNumTel(string $numTel): self
     {
-        $this->num_tel = $num_tel;
+        $this->numTel = $numTel;
 
         return $this;
     }
@@ -150,6 +210,30 @@ class Cinema
         $this->image = $image;
 
         return $this;
+    }
+
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+
+        // VERY IMPORTANT:
+        // It is required that at least one field changes if you are using Doctrine,
+        // otherwise the event listeners won't be called and the file is lost
+        if ($image) {
+            // if 'updatedAt' is not defined in your entity, use another property
+            $this->email = $this->getEmail();
+
+        }
+    }
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    public function __toString()
+    {
+        return(String) $this->getNomCinema();
     }
 
     /**
@@ -212,28 +296,82 @@ class Cinema
         return $this;
     }
 
-    public function getLatitude(): ?string
+    /**
+     * @return Collection|Evaluation[]
+     */
+    public function getEvaluations(): Collection
     {
-        return $this->Latitude;
+        return $this->evaluations;
     }
 
-    public function setLatitude(?string $Latitude): self
+    public function addEvaluation(Evaluation $evaluation): self
     {
-        $this->Latitude = $Latitude;
+        if (!$this->evaluations->contains($evaluation)) {
+            $this->evaluations[] = $evaluation;
+            $evaluation->setIdCinema($this);
+        }
 
         return $this;
     }
 
-    public function getLongitude(): ?string
+    public function removeEvaluation(Evaluation $evaluation): self
     {
-        return $this->Longitude;
-    }
-
-    public function setLongitude(?string $Longitude): self
-    {
-        $this->Longitude = $Longitude;
+        if ($this->evaluations->removeElement($evaluation)) {
+            // set the owning side to null (unless already changed)
+            if ($evaluation->getIdCinema() === $this) {
+                $evaluation->setIdCinema(null);
+            }
+        }
 
         return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getRating()
+    {
+        return $this->rating;
+    }
+
+    /**
+     * @param mixed $rating
+     */
+    public function setRating($rating): void
+    {
+        $this->rating = $rating;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLat()
+    {
+        return $this->lat;
+    }
+
+    /**
+     * @param mixed $lat
+     */
+    public function setLat($lat): void
+    {
+        $this->lat = $lat;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getLan()
+    {
+        return $this->lan;
+    }
+
+    /**
+     * @param mixed $lan
+     */
+    public function setLan($lan): void
+    {
+        $this->lan = $lan;
     }
 
 

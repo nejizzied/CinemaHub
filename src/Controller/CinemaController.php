@@ -1,144 +1,124 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Controller;
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use App\Form\PublType;
+use App\Form\UpdateType;
+use App\Entity\Publicite;
 
-use App\Entity\Cinema;
+
+use App\Repository\AdminRepository;
 use App\Repository\CinemaRepository;
-use App\Manager\CinemaManager;
-use App\Services\GoogleService;
-use Symfony\Component\HttpFoundation\Request;
+use App\Repository\EvaluationRepository;
+use App\Repository\UserRepository;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Doctrine\ORM\EntityManagerInterface;
+use App\Repository\PubliciteRepository;
+use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Contracts\HttpClient\HttpClientInterface;
 
-/**
- * @Route("/api/cinema/v1", name="cinemas")
- */
-class CinemaController extends AbstractApiController
+
+class CinemaController extends AbstractController
 {
-    private $cinemaRepo ;
-
-    private $cinemaManager ;
-
-    private $MapApiService ;
-
-  
     /**
-     * Constructeur For Injection Dependency
+     * @Route("/api/cinema/list/", name="getListCinema")
      */
-
-    public function __construct(CinemaRepository $cinemaRepository , CinemaManager $cinemaManager , GoogleService $GoogleService)
+    public function getListCinema(
+                                     UserRepository $userRepository ,
+                                     NormalizerInterface $Normalizer,
+                                     CinemaRepository $cinemaRepository,
+                                     AdminRepository$adminRepository,
+                                     EvaluationRepository $evaluationRepository
+    ): Response
     {
-         $this->cinemaRepo =  $cinemaRepository ;
-         $this->cinemaManager = $cinemaManager ;
-         $this->MapApiService = $GoogleService ;
-    }
-
-    /**
-     * @Route("/", name="index_cinema", methods={"GET"})
-     */
-    public function ListCinemaAction(CinemaRepository $cinemaRepository)
-    {
-
-        if (!$this->cinemaRepo->findAll()) {
-            return $this->CatchError([ 'status'=> Response::HTTP_NOT_FOUND ,'message' => 'List Empty '], Response::HTTP_INTERNAL_SERVER_ERROR);
-         
-        }
-       
-       return $this->respond(['status' => Response::HTTP_OK , 'message' => ' Availaible Cinema ' ,'data' => $this->cinemaRepo->findAll() ] , 200);
-
-    }
-
-
-    /**
-     * @Route("/cinema/{id}", name="show_cinema", methods={"GET"})
-     */
-    public function showAction(Request $request): Response
-    {
-        $cinema = $this->getDoctrine()->getRepository(Cinema::class)->find($request->get('id'));
-
-        if (!$cinema) {
-            return $this->CatchError([ 'status'=> Response::HTTP_NOT_FOUND ,'message' => 'Something went wrong'], Response::HTTP_INTERNAL_SERVER_ERROR);
-         
-        }
-
-        return $this->respond(['status' => Response::HTTP_OK , 'message' => 'details for each cinema' ,'data' => $cinema ] , 200);
-
-    }
-
-
-    /**
-     * @Route("/new", name="create_cinema", methods={"POST", "GET"})
-     */
-    public function createAction(Request $request , SerializerInterface $serializer): Response
-    {
-
-        $cinema = $serializer->deserialize($request->getContent(), Cinema::class, 'json');
-      dd($cinema->getAdresse()) ;
-         $latlong=  $this->MapApiService->GetLatLong($cinema->getAdresse());
-
-           dd($latlong);
-        // $latitude = $latlong->results[0]->geometry->location->lat;
-        // $longitude = $latlong->results[0]->geometry->location->lng;
-        // $cinema->setLatitude($latitude);
-        // $cinema->setLongitude($longitude);
-
-      
-           
-        $cinema = $this->cinemaManager->persistCinemaDB($cinema);
-        
-         return $this->respond(['status' => Response::HTTP_OK , 'message' => 'Successfully Added Cinema ' ,'data' => $cinema ] , 200);
-
-    }
-
-
-       /**
-     * @Route("/edit/{id}", name="edit_cinema", methods={"PUT", "GET"})
-     */
-    public function editAction(Request $request , SerializerInterface $serializer , $id): Response
-    {
-
-        $cinema = $this->cinemaRepo->findOneBy(['id' => $id]);
-        if (empty($cinema)) {
-            return $this->CatchError([ 'status'=> Response::HTTP_NOT_FOUND ,'message' => 'Something went wrong'], Response::HTTP_INTERNAL_SERVER_ERROR);
-         
-        }
-
-        $data = json_decode($request->getContent(), true);
-
-        empty($data['nom_cinema']) ? true : $cinema->setNomCinema($data['nom_cinema']);
-        empty($data['num_tel']) ? true : $cinema->setNumTel($data['num_tel']);
-        empty($data['adresse']) ? true : $cinema->setAdresse($data['adresse']);
-        empty($data['email']) ? true : $cinema->setEmail($data['email']);
-        empty($data['password']) ? true : $cinema->setPassword($data['password']);
-        empty($data['image']) ? true : $cinema->setImage($data['image']);
-
-        $cinema = $this->cinemaManager->persistCinemaDB($cinema);
-    
-         return $this->respond(['status' => Response::HTTP_OK , 'message' => 'Successfully Edited Cinema ' ,'data' => $cinema ] , 200);
-
-    }
-
-
-    /**
-     * @Route("/delete/{id}", name="cinema_delete", methods={"GET" ,"DELETE"})
-     */
-    public function deleteAction(Request $request,  $id , CinemaRepository $cinemaRepositor): Response
-    {
-
-            $cinema = $this->cinemaRepo->findOneBy(['id' => $id]);
-            if (empty($cinema)) 
-            {
-                return $this->CatchError([ 'status'=> Response::HTTP_NOT_FOUND ,'message' => 'Something went wrong'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        $cinemas = $cinemaRepository->findAll();
+        $res = [];
+        foreach ($cinemas as &$cin)
+        {
+            $rating = 0 ;
+            $evaluations = $evaluationRepository->findBy(['idCinema' => $cin]);
+            $evaluationNumber = sizeof($evaluations);
+            foreach ($evaluations as $ev) {
+                $rating += $ev->getNote();
             }
- 
-          $cinema = $this->cinemaManager->DeleteCinemaDB($cinema);
+            if($evaluationNumber != 0)
+            $rating = $rating / $evaluationNumber ;
+            $cin->setRating( $rating) ;
+            array_push($res , $cin) ;
+        }
 
-          return $this->respond(['status' => Response::HTTP_OK , 'message' => 'Successfully deleted Cinema ' ,'data' => $cinema ] , 200);
-
+        $jsonContent = $Normalizer->normalize($res, 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
+        $retour=json_encode($jsonContent);
+        return new Response($retour);
     }
 
+    /**
+     * @Route("/api/cinemas/map/", name="getMapListCinema")
+     */
+    public function getMapListCinema(
+        UserRepository $userRepository ,
+        NormalizerInterface $Normalizer,
+        CinemaRepository $cinemaRepository,
+        AdminRepository$adminRepository,
+        EvaluationRepository $evaluationRepository,
+        HttpClientInterface $client
+    ): Response
+    {
+
+        $cinemas = $cinemaRepository->findAll();
+        $res = [];
+
+        foreach ($cinemas as &$cin)
+        {
+
+            $apiUrl = "https://autocomplete.search.hereapi.com/v1/geocode?q=".$cin->getAdresse()."&apiKey=zd9KxDtV_kRYImFUydw3ObvPYSPOZdmss2tdI50eraY";
+
+            $response = $client->request(
+                'GET',
+                $apiUrl
+            );
+
+            $statusCode = $response->getStatusCode();
+
+            $content = $response->getContent();
+
+            $content = json_decode($content, true);
+            $item = $content["items"][0];
+
+            $cin->setLan( $item["position"]["lng"]) ;
+            $cin->setLat($item["position"]["lat"]);
+            array_push($res , $cin) ;
+        }
+
+        $jsonContent = $Normalizer->normalize($res, 'json' , ['groups' => ['map'] , 'enable_max_depth' => true]);
+        $retour=json_encode($jsonContent);
+        return new Response($retour);
+    }
+
+    function distance($lat1, $lon1, $lat2, $lon2, $unit) {
+        if (($lat1 == $lat2) && ($lon1 == $lon2)) {
+            return 0;
+        }
+        else {
+            $theta = $lon1 - $lon2;
+            $dist = sin(deg2rad($lat1)) * sin(deg2rad($lat2)) +  cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * cos(deg2rad($theta));
+            $dist = acos($dist);
+            $dist = rad2deg($dist);
+            $miles = $dist * 60 * 1.1515;
+            $unit = strtoupper($unit);
+
+            if ($unit == "K") {
+                return ($miles * 1.609344);
+            } else if ($unit == "N") {
+                return ($miles * 0.8684);
+            } else {
+                return $miles;
+            }
+        }
+    }
 }

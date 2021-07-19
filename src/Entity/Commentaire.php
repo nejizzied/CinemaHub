@@ -2,43 +2,54 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\CommentaireRepository;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping as ORM;use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ *
  * @ORM\Entity(repositoryClass=CommentaireRepository::class)
+ *
+ * @ApiResource( normalizationContext={"groups"={"read"}}  ,
+ *  denormalizationContext={"groups"={"write"}} , formats={"json"}
+ * )
+ *
  */
+
+#[ApiFilter(SearchFilter::class, properties: ['idFilm' => 'exact' ])]
+
 class Commentaire
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"read"  , "write"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"write" , "read"})
      */
     private $text;
 
     /**
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="commentaires")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"write" , "read"})
      */
-    private $id_user;
+    private $idUser;
 
     /**
      * @ORM\ManyToOne(targetEntity=Film::class, inversedBy="commentaires")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"write" , "read"})
      */
-    private $id_film;
+    private $idFilm;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="commentaires")
-     * @ORM\JoinColumn(nullable=false)
-     */
-    private $id_admin;
 
     public function getId(): ?int
     {
@@ -59,36 +70,24 @@ class Commentaire
 
     public function getIdUser(): ?User
     {
-        return $this->id_user;
+        return $this->idUser;
     }
 
-    public function setIdUser(?User $id_user): self
+    public function setIdUser(?User $idUser): self
     {
-        $this->id_user = $id_user;
+        $this->idUser = $idUser;
 
         return $this;
     }
 
     public function getIdFilm(): ?Film
     {
-        return $this->id_film;
+        return $this->idFilm;
     }
 
-    public function setIdFilm(?Film $id_film): self
+    public function setIdFilm(?Film $idFilm): self
     {
-        $this->id_film = $id_film;
-
-        return $this;
-    }
-
-    public function getIdAdmin(): ?Admin
-    {
-        return $this->id_admin;
-    }
-
-    public function setIdAdmin(?Admin $id_admin): self
-    {
-        $this->id_admin = $id_admin;
+        $this->idFilm = $idFilm;
 
         return $this;
     }
