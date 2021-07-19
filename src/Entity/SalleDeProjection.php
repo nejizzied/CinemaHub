@@ -63,6 +63,12 @@ class SalleDeProjection
 
     private $idFilm;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"write" , "read"})
+     */
+    private $nom;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -124,6 +130,18 @@ class SalleDeProjection
     public function setIdFilm(Film $idFilm): self
     {
         $this->idFilm = $idFilm;
+
+        return $this;
+    }
+
+    public function getNom(): ?string
+    {
+        return $this->nom;
+    }
+
+    public function setNom(?string $nom): self
+    {
+        $this->nom = $nom;
 
         return $this;
     }
