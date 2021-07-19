@@ -6,9 +6,16 @@ use App\Repository\CategorieRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ *
  * @ORM\Entity(repositoryClass=CategorieRepository::class)
+ * @ApiResource( normalizationContext={"groups"={"read"}}  ,
+ *  denormalizationContext={"groups"={"write"}} , formats={"json"}
+ * )
+ *
  */
 class Categorie
 {
@@ -16,16 +23,18 @@ class Categorie
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("read" , "write" )
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups("read" , "write")
      */
     private $genre;
 
     /**
-     * @ORM\OneToMany(targetEntity=Film::class, mappedBy="id_categorie")
+     * @ORM\OneToMany(targetEntity=Film::class, mappedBy="idCtaegorie")
      */
     private $films;
 

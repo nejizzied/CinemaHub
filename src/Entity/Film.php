@@ -6,65 +6,121 @@ use App\Repository\FilmRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Annotation\Context;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Polyfill\Intl\Normalizer\Normalizer;
+use Vich\UploaderBundle\Mapping\Annotation as Vich;
 
 /**
+ *
  * @ORM\Entity(repositoryClass=FilmRepository::class)
+ * @Vich\Uploadable
+ * @ApiResource( normalizationContext={"groups"={"read"} }  ,
+ *  denormalizationContext={"groups"={"write"}} , formats={"json"} ,
+ *       collectionOperations= {
+ *                          "get",
+ *                          "post" = {
+ *                          "input_formats" = {
+ *                               "multipart" = {"multipart/form-data"},
+ *                                              },
+ *                                  },
+ *                        }
+ *
+ * )
+ *
  */
+
 class Film
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"write", "read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"write", "read"})
      */
-    private $nom_film;
+    private $nomFilm;
 
     /**
      * @ORM\Column(type="datetime")
+     * @Groups({"write" , "read"})
      */
-    private $show_time;
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
+    private $showTime;
+
 
     /**
      * @ORM\Column(type="time")
+     * @Groups({"write" , "read"})
+     *
      */
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'H:i'])]
     private $duree;
 
     /**
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="string")
+     * @Groups({"write" , "read"})
+     *
      */
+
     private $prix;
 
     /**
      * @ORM\Column(type="string", length=255)
+     * @Groups({"write" , "read"})
      */
     private $audience;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Categorie::class, inversedBy="films")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\Column(type="string", length=255 , nullable=true)
+     * @Groups({"write" , "read"})
      */
-    private $id_categorie;
+    private $image;
 
     /**
-     * @ORM\OneToMany(targetEntity=Reservation::class, mappedBy="id_film")
+     * @Vich\UploadableField(mapping="photo_de_film", fileNameProperty="image")
+     * @var File
+     *  @Groups ({"write"})
+     */
+    private $imageFile;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Categorie::class, inversedBy="films")
+     * @ORM\JoinColumn(nullable=false)
+     * @Groups({"write" , "read"})
+     */
+    private $idCategorie;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Reservation::class, mappedBy="idFilm")
      */
     private $reservations;
 
     /**
      * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="films")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"write" , "read"})
      */
-    private $id_admin;
+    private $idAdmin;
 
     /**
-     * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="id_film")
+     * @ORM\OneToMany(targetEntity=Commentaire::class, mappedBy="idFilm")
      */
     private $commentaires;
+
+    /**
+     * @Groups({"other"})
+     */
+    private $status;
 
     public function __construct()
     {
@@ -79,24 +135,24 @@ class Film
 
     public function getNomFilm(): ?string
     {
-        return $this->nom_film;
+        return $this->nomFilm;
     }
 
-    public function setNomFilm(string $nom_film): self
+    public function setNomFilm(string $nomFilm): self
     {
-        $this->nom_film = $nom_film;
+        $this->nomFilm = $nomFilm;
 
         return $this;
     }
 
     public function getShowTime(): ?\DateTimeInterface
     {
-        return $this->show_time;
+        return $this->showTime;
     }
 
-    public function setShowTime(\DateTimeInterface $show_time): self
+    public function setShowTime(\DateTimeInterface $showTime): self
     {
-        $this->show_time = $show_time;
+        $this->showTime = $showTime;
 
         return $this;
     }
@@ -113,15 +169,26 @@ class Film
         return $this;
     }
 
-    public function getPrix(): ?int
+    public function getPrix(): ?string
     {
         return $this->prix;
     }
 
-    public function setPrix(int $prix): self
+    public function setPrix($prix): self
     {
         $this->prix = $prix;
 
+        return $this;
+    }
+
+    public function getStatus(): ?string
+    {
+        return $this->status;
+    }
+
+    public function setStatus($status): self
+    {
+        $this->status = $status;
         return $this;
     }
 
@@ -137,14 +204,46 @@ class Film
         return $this;
     }
 
-    public function getIdCategorie(): ?int
+
+    public function getImage(): ?string
     {
-        return $this->id_categorie;
+        return $this->image;
     }
 
-    public function setIdCategorie(int $id_categorie): self
+    public function setImage(?string $image): self
     {
-        $this->id_categorie = $id_categorie;
+        $this->image = $image;
+
+        return $this;
+    }
+
+    public function setImageFile(File $image = null)
+    {
+        $this->imageFile = $image;
+
+        // VERY IMPORTANT:
+        // It is required that at least one field changes if you are using Doctrine,
+        // otherwise the event listeners won't be called and the file is lost
+        if ($image) {
+            // if 'updatedAt' is not defined in your entity, use another property
+            $this->duree = $this->getDuree();
+
+        }
+    }
+
+    public function getImageFile()
+    {
+        return $this->imageFile;
+    }
+
+    public function getIdCategorie(): ?Categorie
+    {
+        return $this->idCategorie;
+    }
+
+    public function setIdCategorie(Categorie $idCategorie): self
+    {
+        $this->idCategorie = $idCategorie;
 
         return $this;
     }
@@ -181,12 +280,12 @@ class Film
 
     public function getIdAdmin(): ?Admin
     {
-        return $this->id_admin;
+        return $this->idAdmin;
     }
 
-    public function setIdAdmin(?Admin $id_admin): self
+    public function setIdAdmin(?Admin $idAdmin): self
     {
-        $this->id_admin = $id_admin;
+        $this->idAdmin = $idAdmin;
 
         return $this;
     }

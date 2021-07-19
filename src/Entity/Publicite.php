@@ -3,41 +3,96 @@
 namespace App\Entity;
 
 use App\Repository\PubliciteRepository;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping as ORM;use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Context;
+use Symfony\Component\Serializer\Annotation\Groups;
+use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 
 /**
+ *
  * @ORM\Entity(repositoryClass=PubliciteRepository::class)
+ *
+ * @ApiResource( normalizationContext={"groups"={"read"}}  ,
+ *  denormalizationContext={"groups"={"write"}} , formats={"json"} ,
+ *     itemOperations = {
+ *          "get",
+ *          "put",
+ *          "patch",
+ *          "affichagePubCinema" = {
+ *              "route_name" = "affichagePubCinema",
+ *          },
+ *     "AnnulerPub" = {
+ *              "route_name" = "AnnulerPub",
+ *          },
+ *     "ConfirmerPub" = {
+ *              "route_name" = "ConfirmerPub",
+ *          },
+ *     "DelPub" = {
+ *              "route_name" = "DelPub",
+ *          },
+ *     "ModifierPub" = {
+ *              "route_name" = "ModifierPub",
+ *          },
+ *     "AjoutPub" = {
+ *              "route_name" = "AjoutPub",
+ *          },
+ *      "pub" = {
+ *              "route_name" = "pub",
+ *          },
+ * }
+ * )
  */
+
 class Publicite
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups({"write" , "read"})
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"write" , "read"})
      */
     private $prix;
 
     /**
      * @ORM\Column(type="date")
+     * @Groups({"write" , "read"})
      */
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
     private $date;
 
     /**
      * @ORM\ManyToOne(targetEntity=Cinema::class, inversedBy="publicites")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"write" , "other"})
      */
-    private $id_cinema;
+    private $idCinema;
+
 
     /**
      * @ORM\ManyToOne(targetEntity=Admin::class, inversedBy="publicites")
-     * @ORM\JoinColumn(nullable=false)
+     * @ORM\JoinColumn(nullable=true)
+     * @Groups({"write"})
      */
-    private $id_admin;
+    private $idAdmin;
+
+    /**
+     * @ORM\Column(type="date")
+     * @Groups({"write" , "read"})
+     */
+    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y-m-d'])]
+    private $datefin;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups({"write" , "read" , "other"})
+     */
+    private $etat;
 
     public function getId(): ?int
     {
@@ -70,24 +125,48 @@ class Publicite
 
     public function getIdCinema(): ?Cinema
     {
-        return $this->id_cinema;
+        return $this->idCinema;
     }
 
-    public function setIdCinema(?Cinema $id_cinema): self
+    public function setIdCinema(?Cinema $idCinema): self
     {
-        $this->id_cinema = $id_cinema;
+        $this->idCinema = $idCinema;
 
         return $this;
     }
 
     public function getIdAdmin(): ?Admin
     {
-        return $this->id_admin;
+        return $this->idAdmin;
     }
 
-    public function setIdAdmin(?Admin $id_admin): self
+    public function setIdAdmin(?Admin $idAdmin): self
     {
-        $this->id_admin = $id_admin;
+        $this->idAdmin = $idAdmin;
+
+        return $this;
+    }
+
+    public function getDateFin(): ?\DateTimeInterface
+    {
+        return $this->datefin;
+    }
+
+    public function setDateFin(\DateTimeInterface $date): self
+    {
+        $this->datefin = $date;
+
+        return $this;
+    }
+
+    public function getEtat(): ?string
+    {
+        return $this->etat;
+    }
+
+    public function setEtat(?string $etat): self
+    {
+        $this->etat = $etat;
 
         return $this;
     }

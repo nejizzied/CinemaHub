@@ -2,47 +2,66 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Core\Annotation\ApiFilter;
+use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
 use App\Repository\SalleDeProjectionRepository;
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\ORM\Mapping as ORM;use ApiPlatform\Core\Annotation\ApiResource;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
+ *
  * @ORM\Entity(repositoryClass=SalleDeProjectionRepository::class)
+ *
+ * @ApiResource(normalizationContext={"groups"={"read"}}  ,
+ *  denormalizationContext={"groups"={"write"}} , formats={"json"}
+ * )
+ *
  */
+
+#[ApiFilter(SearchFilter::class, properties: ['idCinema' => 'exact' ])]
+
 class SalleDeProjection
 {
     /**
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
+     * @Groups("read")
      */
     private $id;
 
     /**
      * @ORM\Column(type="integer")
+     * @Groups({"write" , "read"})
      */
-    private $nbr_places;
+    private $nbrPlaces;
 
     /**
-     * @ORM\Column(type="string", length=255)
+     * @ORM\Column(type="string", length=255 , nullable=true , options={"default" = "default.png"})
+     * @Groups({"read"})
      */
     private $image;
 
     /**
-     * @ORM\Column(type="boolean")
+     * @ORM\Column(type="boolean" , nullable=true)
+     * @Groups({"write" , "read"})
      */
     private $status;
 
     /**
      * @ORM\ManyToOne(targetEntity=Cinema::class, inversedBy="salleDeProjections")
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"write"})
      */
-    private $id_cinema;
+    private $idCinema;
 
     /**
      * @ORM\OneToOne(targetEntity=Film::class, cascade={"persist", "remove"})
      * @ORM\JoinColumn(nullable=false)
+     * @Groups({"write" , "read"})
      */
-    private $id_film;
+
+    private $idFilm;
 
     public function getId(): ?int
     {
@@ -51,12 +70,12 @@ class SalleDeProjection
 
     public function getNbrPlaces(): ?int
     {
-        return $this->nbr_places;
+        return $this->nbrPlaces;
     }
 
-    public function setNbrPlaces(int $nbr_places): self
+    public function setNbrPlaces(int $nbrPlaces): self
     {
-        $this->nbr_places = $nbr_places;
+        $this->nbrPlaces = $nbrPlaces;
 
         return $this;
     }
@@ -66,7 +85,7 @@ class SalleDeProjection
         return $this->image;
     }
 
-    public function setImage(string $image): self
+    public function setImage(?string $image): self
     {
         $this->image = $image;
 
@@ -87,24 +106,24 @@ class SalleDeProjection
 
     public function getIdCinema(): ?Cinema
     {
-        return $this->id_cinema;
+        return $this->idCinema;
     }
 
-    public function setIdCinema(?Cinema $id_cinema): self
+    public function setIdCinema(?Cinema $idCinema): self
     {
-        $this->id_cinema = $id_cinema;
+        $this->idCinema = $idCinema;
 
         return $this;
     }
 
     public function getIdFilm(): ?Film
     {
-        return $this->id_film;
+        return $this->idFilm;
     }
 
-    public function setIdFilm(Film $id_film): self
+    public function setIdFilm(Film $idFilm): self
     {
-        $this->id_film = $id_film;
+        $this->idFilm = $idFilm;
 
         return $this;
     }

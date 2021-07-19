@@ -47,4 +47,62 @@ class PubliciteRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    public function getPubsByEtat($value)
+    {
+        return $this->createQueryBuilder('p')
+            ->andWhere('p.etat = :val')
+            ->setParameter('val', $value)
+            ->getQuery()
+            ->getResult()
+            ;
+    }
+
+    // nékhdhou ekher publicite mta3 pub user - 1
+    public function getLastConfirmedPub() : ?Publicite // type de retoure w el ? kima traja3 pub kima tnajém matraja3ch
+    {
+        $pubs = $this->createQueryBuilder('p') // select from publicité as p
+            ->andWhere('p.etat = :val')
+            ->andWhere('p.date <= :da ')
+            ->setParameter('da' , date("Y/m/d"))
+            ->setParameter('val', "confirmed")
+            ->orderBy('p.date' , 'DESC')
+            ->getQuery()
+            ->getResult();
+
+        return $pubs != null ? $pubs[0] : null;
+    }
+
+    // tjib el pub el jéya w confirmé
+    // el fonction hethi w elli 9baleha rien que bech ntalla3 bech ntalla3 el intevalle de jour elli howa libre fil calendrier
+    public function getFirstConfirmedPendingPub() : ?Publicite
+    {
+        $pubs = $this->createQueryBuilder('p')
+            ->andWhere('p.etat = :val')
+            ->andWhere('p.date > :da ' )
+            ->setParameter('val', "confirmed")
+            ->setParameter('da' , date("Y/m/d"))
+            ->orderBy('p.date' , 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return $pubs != null ? $pubs[0] : null;
+    }
+
+    public function getPendingConfirmedPub()
+    {
+        $pubs = $this->createQueryBuilder('p')
+            ->andWhere('p.etat = :val')
+            ->andWhere('p.date <= :da ' )
+            ->andWhere('p.datefin >=  :da ' )
+            ->setParameter('val', "confirmed")
+            ->setParameter('da' , date("Y/m/d"))
+            ->orderBy('p.date' , 'ASC')
+            ->getQuery()
+            ->getResult();
+
+        return $pubs ;
+    }
+
+
 }
