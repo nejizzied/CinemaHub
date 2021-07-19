@@ -316,6 +316,7 @@ class Film
                 $commentaire->setIdFilm(null);
             }
         }
+
         return $this;
     }
 }

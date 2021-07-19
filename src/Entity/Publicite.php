@@ -17,8 +17,28 @@ use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
  *     itemOperations = {
  *          "get",
  *          "put",
- *          "patch"
- *
+ *          "patch",
+ *          "affichagePubCinema" = {
+ *              "route_name" = "affichagePubCinema",
+ *          },
+ *     "AnnulerPub" = {
+ *              "route_name" = "AnnulerPub",
+ *          },
+ *     "ConfirmerPub" = {
+ *              "route_name" = "ConfirmerPub",
+ *          },
+ *     "DelPub" = {
+ *              "route_name" = "DelPub",
+ *          },
+ *     "ModifierPub" = {
+ *              "route_name" = "ModifierPub",
+ *          },
+ *     "AjoutPub" = {
+ *              "route_name" = "AjoutPub",
+ *          },
+ *      "pub" = {
+ *              "route_name" = "pub",
+ *          },
  * }
  * )
  */
