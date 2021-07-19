@@ -27,9 +27,9 @@ use Symfony\Component\Serializer\SerializerInterface;
 class StatistiqueController extends AbstractController
 {
     /**
-     * @Route("/api/statistiques/", name="statistique" , methods={"get"})
+     * @Route("/api/statistiques/reservations", name="statistiques_reservation" , methods={"get"})
      */
-    public function cinemaEvaluation(Request $request , $id ,
+    public function gestStats(Request $request  ,
                                      UserRepository $userRepository ,
                                      NormalizerInterface $Normalizer,
                                      CinemaRepository $cinemaRepository,
@@ -43,8 +43,12 @@ class StatistiqueController extends AbstractController
         // nbr de film par cinema
         // nbr de ticket par place
 
-        // $jsonContent = $Normalizer->normalize(['rating' => $rating], 'json',['groups' => 'read' , 'enable_max_depth' => true]);
-        // $retour=json_encode($jsonContent);
-        return new Response('no projection found', Response::HTTP_BAD_REQUEST);
+        $nbrResConfirmé = sizeof($reservationRepository->findBy(['status' => 'confirmé']));
+        $nbrResAnnulé = sizeof($reservationRepository->findBy(['status' => 'annulé']));
+        $nbrResEnAttente = sizeof($reservationRepository->findBy(['status' => 'en attente de confirmation']));
+
+         $jsonContent = $Normalizer->normalize(['confirmé' => $nbrResConfirmé , 'annulé' => $nbrResAnnulé , 'en attente' => $nbrResEnAttente], 'json',['groups' => 'read' , 'enable_max_depth' => true]);
+         $retour=json_encode($jsonContent);
+        return new Response($retour);
     }
 }
