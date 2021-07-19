@@ -39,10 +39,6 @@ class StatistiqueController extends AbstractController
                                      SalleDeProjectionRepository $salleDeProjectionRepository,
     ): Response
     {
-        // nbr de reservation par film
-        // nbr de film par cinema
-        // nbr de ticket par place
-
         $nbrResConfirmé = sizeof($reservationRepository->findBy(['status' => 'confirmé']));
         $nbrResAnnulé = sizeof($reservationRepository->findBy(['status' => 'annulé']));
         $nbrResEnAttente = sizeof($reservationRepository->findBy(['status' => 'en attente de confirmation']));

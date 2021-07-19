@@ -76,7 +76,7 @@ class CinemaController extends AbstractController
         foreach ($cinemas as &$cin)
         {
 
-            $apiUrl = "https://autocomplete.search.hereapi.com/v1/geocode?q=".$cin->getAdresse()."&apiKey=9MrJVMUANOrj3rt_rrx6ED2Tsdqc7UIicY2zSFwLeIw";
+            $apiUrl = "https://autocomplete.search.hereapi.com/v1/geocode?q=".$cin->getAdresse()."&apiKey=zd9KxDtV_kRYImFUydw3ObvPYSPOZdmss2tdI50eraY";
 
             $response = $client->request(
                 'GET',
