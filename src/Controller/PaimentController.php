@@ -30,16 +30,16 @@ class PaimentController extends AbstractController
                                   EntityManagerInterface $em ,
     ): Response
     {
+        //clé de l'api de paiment
         $clientSecret = "sk_test_51JFh3UATJA8D1NKoPu7E0H8FSf0VkcNyiuv975RimjZooQLWam26RZQM5QsAVggUKFL7osH9PxJISGNHudk86LTf00BuwjWg2C" ;
         $user = $userRepository->find($id);
         $data = json_decode($request->getContent(), true);
-        empty($data['amount']) ? true : $user->setAmount(($data['text']));
-
+        empty($data['amount']) ? true : $user->setAmount(($data['amount']));
 
         if($user != null) {
             $em->persist($user);
             $em ->flush();
-            $jsonContent = $Normalizer->normalize(['msg' => 'Compte chargé' , 'client_secret' => ''], 'json',['groups' => 'read' , 'enable_max_depth' => true]);
+            $jsonContent = $Normalizer->normalize(['msg' => 'Compte chargé' , 'client_secret' => $clientSecret], 'json',['groups' => 'read' , 'enable_max_depth' => true]);
             $retour=json_encode($jsonContent);
             return new Response($retour);
         }
