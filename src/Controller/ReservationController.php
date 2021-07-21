@@ -60,13 +60,19 @@ class ReservationController extends AbstractController
 
         if ($salleProjecton != null) {
             if ($reservation->getNbrTickets() <= $placesDispo) {
-                $reservation->setStatus('en attente de confirmation');
+                if($user->getAmount() >= ( $reservation->getNbrTickets() * $reservation->getIdFilm()->getPrix() ) )
+                {  $reservation->setStatus('en attente de confirmation');
                 $em->persist($reservation);
                 $em ->flush();
 
                 $jsonContent = $Normalizer->normalize(['msg' => 'Reservation Ajouté'], 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
                 $retour=json_encode($jsonContent);
                 return new Response($retour);
+                }
+                $jsonContent = $Normalizer->normalize(['msg' => 'Solde Insuffisant'], 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
+                $retour=json_encode($jsonContent);
+                return new Response($retour);
+                 }
             }
 
             $jsonContent = $Normalizer->normalize(['msg' => 'aucune place disponible' ], 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
@@ -123,11 +129,12 @@ class ReservationController extends AbstractController
     {
         $reservation = $reservationRepository->find($id);
         $user = $reservation->getIdUser();
-        $user->setPointFidelite($user->getPointFidelite() + 2);
 
         if ($reservation != null) {
 
             $reservation->setStatus("confirmé");
+            $user->setPointFidelite($user->getPointFidelite() + 2);
+            $user->setAmount($user->getAmount()- $reservation->getNbrTickets() * $reservation->getIdFilm()->getPrix())
             $em->persist($user);
             $em->persist($reservation);
             $em ->flush();
