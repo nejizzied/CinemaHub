@@ -45,6 +45,7 @@ class ReservationController extends AbstractController
     {
         $reservation = new Reservation();
         $data = json_decode($request->getContent(), true);
+
         empty($data['nbrTickets']) ? true : $reservation->setNbrTickets(($data['nbrTickets']));
         empty($data['idUser']) ? true : $reservation->setIdUser($userRepository->find($data['idUser']));
         empty($data['idFilm']) ? true : $id = $data['idFilm'];
@@ -53,9 +54,10 @@ class ReservationController extends AbstractController
         $placesDispo = 0 ;
         $placesDispo = sizeof($reservationRepository->findBy(['idFilm' =>$id , 'status' => 'confirmé']));
         $salleProjecton = $salleDeProjectionRepository->findOneBy(['idFilm' => $id]);
+        //calul de nombre de places disponible
         $placesDispo =$salleProjecton->getNbrPlaces() - sizeof($reservationRepository->findBy(['idFilm' =>$id , 'status' => 'confirmé']));
-
         $user = $userRepository->find($data['idUser']);
+
         if ($salleProjecton != null) {
             if ($reservation->getNbrTickets() <= $placesDispo) {
                 $reservation->setStatus('en attente de confirmation');

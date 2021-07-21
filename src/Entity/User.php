@@ -110,6 +110,12 @@ class User
      */
     private $commentaires;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     * @Groups ({"read" , "write"})
+     */
+    private $amount;
+
     public function __construct()
     {
         $this->reservations = new ArrayCollection();
@@ -293,6 +299,18 @@ class User
                 $commentaire->setIdUser(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAmount(): ?string
+    {
+        return $this->amount;
+    }
+
+    public function setAmount(?string $amount): self
+    {
+        $this->amount = $amount;
 
         return $this;
     }
