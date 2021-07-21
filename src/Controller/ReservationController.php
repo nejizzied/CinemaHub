@@ -58,29 +58,33 @@ class ReservationController extends AbstractController
         $placesDispo =$salleProjecton->getNbrPlaces() - sizeof($reservationRepository->findBy(['idFilm' =>$id , 'status' => 'confirmé']));
         $user = $userRepository->find($data['idUser']);
 
-        if ($salleProjecton != null) {
-            if ($reservation->getNbrTickets() <= $placesDispo) {
+        if ($salleProjecton != null)
+        {
+            if ($reservation->getNbrTickets() <= $placesDispo)
+            {
                 if($user->getAmount() >= ( $reservation->getNbrTickets() * $reservation->getIdFilm()->getPrix() ) )
-                {  $reservation->setStatus('en attente de confirmation');
-                $em->persist($reservation);
-                $em ->flush();
-
-                $jsonContent = $Normalizer->normalize(['msg' => 'Reservation Ajouté'], 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
-                $retour=json_encode($jsonContent);
-                return new Response($retour);
+                    {
+                    $reservation->setStatus('en attente de confirmation');
+                    $em->persist($reservation);
+                    $em ->flush();
+                    $jsonContent = $Normalizer->normalize(['msg' => 'Reservation Ajouté'], 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
+                    $retour=json_encode($jsonContent);
+                    return new Response($retour);
+                 }else
+                 {
+                    $jsonContent = $Normalizer->normalize(['msg' => 'Solde Insuffisant'], 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
+                    $retour=json_encode($jsonContent);
+                    return new Response($retour);
                 }
-                $jsonContent = $Normalizer->normalize(['msg' => 'Solde Insuffisant'], 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
-                $retour=json_encode($jsonContent);
-                return new Response($retour);
-                 }
-            }
 
+            }
             $jsonContent = $Normalizer->normalize(['msg' => 'aucune place disponible' ], 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
             $retour=json_encode($jsonContent);
             return new Response($retour);
         }
 
-        $jsonContent = $Normalizer->normalize(['msg' => 'pas de salle de projection trouvé' ], 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
+        $jsonContent = $Normalizer->normalize(
+            ['msg' => 'pas de salle de projection trouvé' ], 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
         $retour=json_encode($jsonContent);
         return new Response($retour, Response::HTTP_BAD_REQUEST);
     }
@@ -116,7 +120,8 @@ class ReservationController extends AbstractController
     /**
      * @Route("/api/reservations/confirmer/{id}", name="reservation_confirmer" )
      */
-    public function confirmerReservation(Request $request, $id,
+    public function confirmerReservation(Request $request,
+                                         $id,
                                      UserRepository $userRepository,
                                      NormalizerInterface $Normalizer,
                                      CinemaRepository $cinemaRepository,
@@ -124,7 +129,7 @@ class ReservationController extends AbstractController
                                      EvaluationRepository $evaluationRepository,
                                      ReservationRepository $reservationRepository,
                                      SalleDeProjectionRepository $salleDeProjectionRepository,
-                                     EntityManagerInterface $em
+                                     EntityManagerInterface $entityManager
     ): Response
     {
         $reservation = $reservationRepository->find($id);
@@ -134,10 +139,11 @@ class ReservationController extends AbstractController
 
             $reservation->setStatus("confirmé");
             $user->setPointFidelite($user->getPointFidelite() + 2);
-            $user->setAmount($user->getAmount()- $reservation->getNbrTickets() * $reservation->getIdFilm()->getPrix())
-            $em->persist($user);
-            $em->persist($reservation);
-            $em ->flush();
+            $user->setAmount($user->getAmount()- $reservation->getNbrTickets() * $reservation->getIdFilm()->getPrix());
+
+            $entityManager->persist($user);
+            $entityManager->persist($reservation);
+            $entityManager ->flush();
 
             $jsonContent = $Normalizer->normalize($reservation, 'json' , ['groups' => ['other' , 'read'] , 'enable_max_depth' => true]);
             $retour=json_encode($jsonContent);
