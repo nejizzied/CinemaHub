@@ -20,7 +20,7 @@ class PaimentController extends AbstractController
 {
 
     /**
-     * @Route("/api/chargerCompte/id", name="charger_user")
+     * @Route("/api/chargerCompte/{id}", name="charger_user")
      */
     public function chargerCompte(Request $request , $id ,
                                   UserRepository $userRepository ,
@@ -34,12 +34,12 @@ class PaimentController extends AbstractController
         $clientSecret = "sk_test_51JFh3UATJA8D1NKoPu7E0H8FSf0VkcNyiuv975RimjZooQLWam26RZQM5QsAVggUKFL7osH9PxJISGNHudk86LTf00BuwjWg2C" ;
         $user = $userRepository->find($id);
         $data = json_decode($request->getContent(), true);
-        empty($data['amount']) ? true : $user->setAmount(($data['amount']));
+        empty($data['amount']) ? true : $user->setAmount( $user->getAmount() + $data['amount']));
 
         if($user != null) {
             $em->persist($user);
             $em ->flush();
-            $jsonContent = $Normalizer->normalize(['msg' => 'Compte chargé' , 'client_secret' => $clientSecret], 'json',['groups' => 'read' , 'enable_max_depth' => true]);
+            $jsonContent = $Normalizer->normalize(['user' => $user, 'msg' => 'Compte chargé' , 'client_secret' => $clientSecret], 'json',['groups' => 'read' , 'enable_max_depth' => true]);
             $retour=json_encode($jsonContent);
             return new Response($retour);
         }
